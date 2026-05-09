@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Activity, AlertCircle, Eye, EyeOff, LockKeyhole, Server, ShieldCheck, User } from 'lucide-react';
+import { Activity, AlertCircle, Eye, EyeOff, LockKeyhole, Server, ShieldCheck, User, UserPlus } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { API_BASE_URL, apiClient } from '../config/api';
 import { HealthStatus } from '../types/api';
@@ -8,10 +8,14 @@ import { StatusBadge } from '../components/ui';
 import { formatDateTime } from '../utils/format';
 
 export default function Login() {
+  const [mode, setMode] = useState<'login' | 'register'>('login');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [regCode, setRegCode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
   const [health, setHealth] = useState<HealthStatus | null>(null);
   const [healthLoading, setHealthLoading] = useState(true);
@@ -41,15 +45,35 @@ export default function Login() {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     setError('');
+    setSuccess('');
     setLoading(true);
 
-    try {
-      await login(username, password);
-      navigate('/computer-vision');
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Invalid credentials');
-    } finally {
-      setLoading(false);
+    if (mode === 'login') {
+      try {
+        await login(username, password);
+        navigate('/computer-vision');
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Invalid credentials');
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      try {
+        await apiClient.post('/api/auth/register', {
+          username,
+          password,
+          full_name: fullName,
+          registration_code: regCode,
+        });
+        setSuccess('Account created! You can now sign in.');
+        setMode('login');
+        setFullName('');
+        setRegCode('');
+      } catch (err: unknown) {
+        setError(err instanceof Error ? err.message : 'Registration failed');
+      } finally {
+        setLoading(false);
+      }
     }
   };
 
@@ -104,10 +128,14 @@ export default function Login() {
           <div className="w-full max-w-sm">
             <div className="mb-8">
               <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
-                <LockKeyhole className="h-6 w-6" />
+                {mode === 'login' ? <LockKeyhole className="h-6 w-6" /> : <UserPlus className="h-6 w-6" />}
               </div>
-              <h2 className="text-2xl font-semibold tracking-normal text-slate-950">Staff sign in</h2>
-              <p className="mt-2 text-sm text-slate-500">Access the Queue Flow dashboards.</p>
+              <h2 className="text-2xl font-semibold tracking-normal text-slate-950">
+                {mode === 'login' ? 'Staff sign in' : 'Create staff account'}
+              </h2>
+              <p className="mt-2 text-sm text-slate-500">
+                {mode === 'login' ? 'Access the Queue Flow dashboards.' : 'Register with your staff code.'}
+              </p>
             </div>
 
             <div className="mb-5 flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
@@ -125,7 +153,33 @@ export default function Login() {
               </div>
             )}
 
+            {success && (
+              <div className="mb-5 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
+                {success}
+              </div>
+            )}
+
             <form onSubmit={handleSubmit} className="space-y-4">
+              {mode === 'register' && (
+                <div>
+                  <label htmlFor="fullName" className="mb-2 block text-sm font-semibold text-slate-700">
+                    Full Name
+                  </label>
+                  <div className="relative">
+                    <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      id="fullName"
+                      value={fullName}
+                      onChange={(e) => setFullName(e.target.value)}
+                      className="field pl-10"
+                      placeholder="Your full name"
+                      required
+                    />
+                  </div>
+                </div>
+              )}
+
               <div>
                 <label htmlFor="username" className="mb-2 block text-sm font-semibold text-slate-700">
                   Username
@@ -172,10 +226,43 @@ export default function Login() {
                 </div>
               </div>
 
+              {mode === 'register' && (
+                <div>
+                  <label htmlFor="regCode" className="mb-2 block text-sm font-semibold text-slate-700">
+                    Staff Registration Code
+                  </label>
+                  <div className="relative">
+                    <ShieldCheck className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                    <input
+                      type="text"
+                      id="regCode"
+                      value={regCode}
+                      onChange={(e) => setRegCode(e.target.value)}
+                      className="field pl-10"
+                      placeholder="Code provided by admin"
+                      required
+                    />
+                  </div>
+                </div>
+              )}
+
               <button type="submit" disabled={loading} className="btn-primary w-full">
-                {loading ? 'Signing in...' : 'Sign in'}
+                {loading
+                  ? mode === 'login' ? 'Signing in...' : 'Creating account...'
+                  : mode === 'login' ? 'Sign in' : 'Create account'}
               </button>
             </form>
+
+            <p className="mt-5 text-center text-sm text-slate-500">
+              {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
+              <button
+                type="button"
+                onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); setSuccess(''); }}
+                className="font-semibold text-blue-600 hover:underline"
+              >
+                {mode === 'login' ? 'Register' : 'Sign in'}
+              </button>
+            </p>
           </div>
         </section>
       </div>
