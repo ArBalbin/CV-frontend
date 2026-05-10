@@ -83,13 +83,17 @@ export default function ComputerVisionDashboard() {
   const [isPaused, setIsPaused] = useState(false);
   const [isConnected, setIsConnected] = useState(true);
   const [streamError, setStreamError] = useState(false);
+  const [streamKey, setStreamKey] = useState(0);
   const [markingDone, setMarkingDone] = useState<number | null>(null);
   const [addingManual, setAddingManual] = useState(false);
   const [lastError, setLastError] = useState('');
 
   useEffect(() => {
     if (!streamError) return;
-    const t = window.setTimeout(() => setStreamError(false), 5000);
+    const t = window.setTimeout(() => {
+      setStreamKey((k) => k + 1);
+      setStreamError(false);
+    }, 5000);
     return () => window.clearTimeout(t);
   }, [streamError]);
 
@@ -363,6 +367,7 @@ export default function ComputerVisionDashboard() {
             <div className="aspect-video">
               {!streamError ? (
                 <img
+                  key={streamKey}
                   src={`${API_BASE_URL}/api/crowd/video`}
                   alt="Live annotated queue camera stream"
                   className="h-full w-full object-contain"
@@ -373,8 +378,12 @@ export default function ComputerVisionDashboard() {
                   <div>
                     <Video className="mx-auto h-10 w-10 text-slate-500" />
                     <p className="mt-3 text-sm font-semibold">Video stream unavailable</p>
-                    <button onClick={() => setStreamError(false)} className="mt-4 rounded-lg bg-white px-3 py-2 text-sm font-semibold text-slate-900">
-                      Retry stream
+                    <p className="mt-1 text-xs text-slate-500">Retrying in 5 s…</p>
+                    <button
+                      onClick={() => { setStreamKey((k) => k + 1); setStreamError(false); }}
+                      className="mt-4 rounded-lg bg-white px-3 py-2 text-sm font-semibold text-slate-900"
+                    >
+                      Retry now
                     </button>
                   </div>
                 </div>

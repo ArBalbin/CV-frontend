@@ -131,6 +131,17 @@ export default function QueueFlowDashboard() {
   const [savingNoshow, setSavingNoshow] = useState(false);
   const [savedNoshow, setSavedNoshow] = useState(false);
   const [lastError, setLastError] = useState('');
+  const [streamError, setStreamError] = useState(false);
+  const [streamKey, setStreamKey] = useState(0);
+
+  useEffect(() => {
+    if (!streamError) return;
+    const t = window.setTimeout(() => {
+      setStreamKey((k) => k + 1);
+      setStreamError(false);
+    }, 5000);
+    return () => window.clearTimeout(t);
+  }, [streamError]);
 
   const fetchHealth = async () => {
     try {
@@ -515,7 +526,29 @@ export default function QueueFlowDashboard() {
           </div>
           <div className="bg-slate-950">
             <div className="aspect-video">
-              <img src={`${API_BASE_URL}/api/crowd/video`} alt="Live annotated queue camera stream" className="h-full w-full object-contain" />
+              {!streamError ? (
+                <img
+                  key={streamKey}
+                  src={`${API_BASE_URL}/api/crowd/video`}
+                  alt="Live annotated queue camera stream"
+                  className="h-full w-full object-contain"
+                  onError={() => setStreamError(true)}
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center px-6 text-center text-slate-300">
+                  <div>
+                    <Video className="mx-auto h-10 w-10 text-slate-500" />
+                    <p className="mt-3 text-sm font-semibold">Video stream unavailable</p>
+                    <p className="mt-1 text-xs text-slate-500">Retrying in 5 s…</p>
+                    <button
+                      onClick={() => { setStreamKey((k) => k + 1); setStreamError(false); }}
+                      className="mt-4 rounded-lg bg-white px-3 py-2 text-sm font-semibold text-slate-900"
+                    >
+                      Retry now
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </Panel>
