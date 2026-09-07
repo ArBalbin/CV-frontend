@@ -1,6 +1,16 @@
 import { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Activity, BarChart3, Eye, LayoutDashboard, LogOut, ShieldCheck, User, UserCircle } from 'lucide-react';
+import {
+  Activity,
+  BarChart3,
+  ExternalLink,
+  LayoutDashboard,
+  LogOut,
+  MonitorPlay,
+  ShieldCheck,
+  User,
+  UserCircle,
+} from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
 interface DashboardLayoutProps {
@@ -13,12 +23,7 @@ interface DashboardLayoutProps {
 
 const navItems = [
   {
-    label: 'Computer Vision',
-    path: '/computer-vision',
-    icon: Eye,
-  },
-  {
-    label: 'Queue Flow',
+    label: 'QueuEx',
     path: '/queueflow',
     icon: Activity,
   },
@@ -54,7 +59,7 @@ export default function DashboardLayout({ title, subtitle, children, eyebrow = '
                 <LayoutDashboard className="h-5 w-5" />
               </div>
               <div>
-                <p className="text-sm font-semibold">QUEUE FLOW</p>
+                <p className="text-sm font-semibold">QueuEx</p>
                 <p className="text-xs text-slate-400">Thesis Prototype</p>
               </div>
             </div>
@@ -82,6 +87,18 @@ export default function DashboardLayout({ title, subtitle, children, eyebrow = '
           </nav>
 
           <div className="border-t border-white/10 p-4">
+            <a
+              href="/queue-display"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mb-3 flex w-full items-center justify-between gap-2 rounded-lg border border-white/10 px-3 py-2 text-sm font-semibold text-slate-200 transition hover:bg-white/10"
+            >
+              <span className="inline-flex items-center gap-2">
+                <MonitorPlay className="h-4 w-4" />
+                Display Board
+              </span>
+              <ExternalLink className="h-3.5 w-3.5 text-slate-400" />
+            </a>
             <button
               onClick={() => navigate('/profile')}
               className="mb-3 flex w-full items-center gap-3 rounded-lg bg-white/5 p-3 text-left transition hover:bg-white/10"

@@ -2,7 +2,7 @@
   "name": "queue-flow-frontend",
   "version": "1.0.0",
   "private": true,
-  "description": "React dashboard frontend for the thesis Queue Flow system.",
+  "description": "React staff dashboard for the QueuEx thesis system.",
   "type": "module",
   "scripts": {
     "dev": "vite",

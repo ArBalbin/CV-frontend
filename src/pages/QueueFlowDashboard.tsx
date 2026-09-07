@@ -13,9 +13,13 @@ import {
 import {
   Activity,
   AlertTriangle,
+  BarChart3,
   CheckCircle2,
+  ChevronDown,
+  ChevronUp,
   Clock3,
   Database,
+  Eye,
   Gauge,
   Hash,
   MapPinned,
@@ -30,6 +34,7 @@ import {
   ShieldAlert,
   Timer,
   TrendingUp,
+  UserPlus,
   Users,
   Video,
 } from 'lucide-react';
@@ -38,6 +43,7 @@ import { EmptyState, MetricCard, Panel, ProgressBar, StatusBadge } from '../comp
 import { API_BASE_URL, apiClient } from '../config/api';
 import {
   HealthStatus,
+  HistoryResponse,
   OnWayNotification,
   QueueData,
   QueuePrediction,
@@ -54,15 +60,21 @@ interface QueueChartSample {
   wait: number;
 }
 
+interface PeopleChartSample {
+  label: string;
+  count: number;
+}
+
 const initialQueueState: QueueState = {
   active_queue: [],
   queue_count: 0,
-  next_number: 1,
+  pending_count: 0,
+  pending_queue: [],
+  pending_link_alerts: [],
   total_served: 0,
   completed: [],
   noshow_alerts: [],
   on_way_notifications: [],
-  appearance_rejections: [],
   counter_assignments: [],
   newly_called: [],
   num_counters: 3,
@@ -92,12 +104,13 @@ function extractQueueState(data: QueueData): QueueState {
   return {
     active_queue: data.active_queue || [],
     queue_count: data.queue_count || data.queue_length || 0,
-    next_number: data.next_number || 1,
+    pending_count: data.pending_count || 0,
+    pending_queue: data.pending_queue || [],
+    pending_link_alerts: data.pending_link_alerts || [],
     total_served: data.total_served || 0,
     completed: data.completed || [],
     noshow_alerts: data.noshow_alerts || [],
     on_way_notifications: data.on_way_notifications || [],
-    appearance_rejections: data.appearance_rejections || [],
     counter_assignments: data.counter_assignments || [],
     newly_called: data.newly_called || [],
     num_counters: data.num_counters ?? 3,
@@ -133,6 +146,12 @@ export default function QueueFlowDashboard() {
   const [lastError, setLastError] = useState('');
   const [streamError, setStreamError] = useState(false);
   const [streamKey, setStreamKey] = useState(0);
+  const [linkingTrackId, setLinkingTrackId] = useState<number | null>(null);
+  const [linkNumberByTrack, setLinkNumberByTrack] = useState<Record<number, string>>({});
+  const [manualNumber, setManualNumber] = useState('');
+  const [addingManual, setAddingManual] = useState(false);
+  const [peopleSamples, setPeopleSamples] = useState<PeopleChartSample[]>([]);
+  const [showDetection, setShowDetection] = useState(false);
 
   useEffect(() => {
     if (!streamError) return;
@@ -190,21 +209,38 @@ export default function QueueFlowDashboard() {
       setLastError('');
 
       if (!isPaused) {
+        const label = formatTimestamp(queueData.timestamp);
         setChartSamples((current) => {
           const next = [
             ...current,
             {
-              label: formatTimestamp(queueData.timestamp),
+              label,
               queue: queueData.queue_length || queueData.queue_count || 0,
               wait: queueData.estimated_wait_time || 0,
             },
           ];
           return next.slice(-60);
         });
+        setPeopleSamples((current) =>
+          [...current, { label, count: queueData.count || 0 }].slice(-60),
+        );
       }
     } catch {
       setIsConnected(false);
       setLastError('Queue metrics are unavailable.');
+    }
+  };
+
+  const loadPeopleHistory = async () => {
+    try {
+      const response = await apiClient.get<HistoryResponse>('/api/history');
+      setPeopleSamples(
+        response.data.history
+          .map((point) => ({ label: formatTimestamp(point.timestamp), count: point.count }))
+          .slice(-60),
+      );
+    } catch {
+      setPeopleSamples([]);
     }
   };
 
@@ -214,6 +250,7 @@ export default function QueueFlowDashboard() {
 
   useEffect(() => {
     refreshAll();
+    loadPeopleHistory();
 
     const dataInterval = window.setInterval(() => {
       if (!isPaused) {
@@ -241,6 +278,24 @@ export default function QueueFlowDashboard() {
     }
   };
 
+  const linkPending = async (trackId: number) => {
+    const parsed = parseInt(linkNumberByTrack[trackId] || '', 10);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      setLastError('Enter the number printed on their ticket first.');
+      return;
+    }
+    setLinkingTrackId(trackId);
+    try {
+      await apiClient.post('/api/queue/link-pending', { track_id: trackId, queue_number: parsed });
+      setLinkNumberByTrack((current) => ({ ...current, [trackId]: '' }));
+      await Promise.all([fetchData(), fetchPrediction()]);
+    } catch {
+      setLastError(`Could not link Q${String(parsed).padStart(3, '0')} — it may already be linked today.`);
+    } finally {
+      setLinkingTrackId(null);
+    }
+  };
+
   const resetQueue = async () => {
     if (!confirm('Reset the entire queue?')) return;
     try {
@@ -248,6 +303,24 @@ export default function QueueFlowDashboard() {
       await Promise.all([fetchData(), fetchPrediction()]);
     } catch {
       setLastError('Could not reset the queue.');
+    }
+  };
+
+  const forceNewPerson = async () => {
+    const parsed = parseInt(manualNumber, 10);
+    if (!Number.isFinite(parsed) || parsed <= 0) {
+      setLastError('Enter the number printed on the kiosk ticket first.');
+      return;
+    }
+    setAddingManual(true);
+    try {
+      await apiClient.post('/api/queue/force-new', { queue_number: parsed, is_walkin: true });
+      setManualNumber('');
+      await Promise.all([fetchData(), fetchPrediction()]);
+    } catch {
+      setLastError(`Could not link Q${String(parsed).padStart(3, '0')} — it may already be linked today.`);
+    } finally {
+      setAddingManual(false);
     }
   };
 
@@ -349,6 +422,47 @@ export default function QueueFlowDashboard() {
     [],
   );
 
+  const peopleChartData = useMemo(
+    () => ({
+      labels: peopleSamples.map((sample) => sample.label),
+      datasets: [
+        {
+          label: 'People detected',
+          data: peopleSamples.map((sample) => sample.count),
+          borderColor: '#2563eb',
+          backgroundColor: 'rgba(37, 99, 235, 0.12)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.35,
+          pointRadius: 0,
+          pointHoverRadius: 4,
+        },
+      ],
+    }),
+    [peopleSamples],
+  );
+
+  const peopleChartOptions = useMemo(
+    () => ({
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index' as const, intersect: false },
+      plugins: {
+        legend: { display: false },
+        tooltip: { mode: 'index' as const, intersect: false },
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { color: '#64748b', maxTicksLimit: 8 } },
+        y: {
+          beginAtZero: true,
+          grid: { color: 'rgba(148, 163, 184, 0.24)' },
+          ticks: { color: '#64748b', precision: 0 },
+        },
+      },
+    }),
+    [],
+  );
+
   const utilization = Math.max(0, data.system_utilization || prediction?.system_utilization || 0);
   const utilizationPercent = Math.min(utilization * 100, 100);
   const forecastCards = [
@@ -380,8 +494,8 @@ export default function QueueFlowDashboard() {
 
   return (
     <DashboardLayout
-      title="Queue Flow Dashboard"
-      subtitle="Queue forecasting, service counters, and no-show handling."
+      title="QueuEx Dashboard"
+      subtitle="Live queue, service counters, walk-in entry, and no-show handling."
       actions={
         <>
           <StatusBadge label={prediction?.data_status === 'stale' ? 'Prediction stale' : isConnected ? 'Live metrics' : 'Metrics offline'} tone={prediction?.data_status === 'stale' ? 'amber' : isConnected ? 'green' : 'red'} />
@@ -456,8 +570,15 @@ export default function QueueFlowDashboard() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-7">
-        <MetricCard icon={Users} label="Queue length" value={queueState.queue_count} detail={`Next ${queueLabel(queueState.next_number)}`} tone="blue" />
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5 2xl:grid-cols-9">
+        <MetricCard icon={Users} label="Queue length" value={queueState.queue_count} detail="Linked to a number" tone="blue" />
+        <MetricCard
+          icon={AlertTriangle}
+          label="Pending link"
+          value={queueState.pending_count}
+          detail="Confirmed present, unlinked"
+          tone={queueState.pending_count > 0 ? 'amber' : 'slate'}
+        />
         <MetricCard icon={Timer} label="Current wait" value={`${numberLabel(data.estimated_wait_time)} min`} detail="Estimated wait" tone="amber" />
         <MetricCard icon={Hash} label="Counters" value={data.active_counters} detail="Active service points" tone="slate" />
         <MetricCard
@@ -566,10 +687,28 @@ export default function QueueFlowDashboard() {
                 <p className="text-sm text-slate-500">{queueState.queue_count} active, {queueState.total_served} served</p>
               </div>
             </div>
-            <button onClick={resetQueue} className="btn-danger">
-              <RefreshCcw className="h-4 w-4" />
-              Reset
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <input
+                value={manualNumber}
+                onChange={(e) => setManualNumber(e.target.value.replace(/\D/g, ''))}
+                placeholder="Ticket #"
+                title="The number printed on the walk-in's kiosk ticket"
+                className="w-24 rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm"
+              />
+              <button
+                onClick={forceNewPerson}
+                disabled={addingManual}
+                title="Link a walk-in's printed kiosk ticket number, or override when the camera missed someone"
+                className="btn-secondary"
+              >
+                <UserPlus className="h-4 w-4" />
+                {addingManual ? 'Adding…' : 'Manual Add'}
+              </button>
+              <button onClick={resetQueue} className="btn-danger">
+                <RefreshCcw className="h-4 w-4" />
+                Reset
+              </button>
+            </div>
           </div>
 
           {queueState.active_queue.length === 0 ? (
@@ -615,7 +754,9 @@ export default function QueueFlowDashboard() {
                               {person.wait_time}
                             </span>
                             <span>Joined {person.joined_at}</span>
-                            {person.track_id !== undefined && <span>Track {person.track_id}</span>}
+                            {person.track_id !== undefined && (
+                              <span className="text-slate-400">camera #{person.track_id}</span>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -723,6 +864,72 @@ export default function QueueFlowDashboard() {
         </div>
       </div>
 
+      <div className="mt-5">
+        <Panel className="p-5">
+          <button
+            onClick={() => setShowDetection((current) => !current)}
+            className="flex w-full items-center justify-between gap-3 text-left"
+          >
+            <div className="flex items-center gap-3">
+              <div className="rounded-lg bg-slate-100 p-2 text-slate-700">
+                <Eye className="h-5 w-5" />
+              </div>
+              <div>
+                <h2 className="text-base font-semibold text-slate-950">Camera &amp; Detection</h2>
+                <p className="text-sm text-slate-500">
+                  People detection, density, and camera health — usually only needed when troubleshooting.
+                </p>
+              </div>
+            </div>
+            <span className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500">
+              {showDetection ? 'Hide' : 'Show'}
+              {showDetection ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+            </span>
+          </button>
+
+          {showDetection && (
+            <div className="mt-5 border-t border-slate-200 pt-5">
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                <MetricCard
+                  icon={Users}
+                  label="People detected"
+                  value={data.count}
+                  detail={formatAgeSeconds(data.timestamp)}
+                  tone="blue"
+                />
+                <MetricCard
+                  icon={Activity}
+                  label="Average density"
+                  value={numberLabel(data.avg_density, 2)}
+                  detail="People per grid cell"
+                  tone="teal"
+                />
+                <MetricCard
+                  icon={BarChart3}
+                  label="Maximum density"
+                  value={numberLabel(data.max_density, 2)}
+                  detail="Busiest grid cell"
+                  tone="amber"
+                />
+              </div>
+
+              <div className="mt-5">
+                <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <h3 className="text-sm font-semibold text-slate-900">People count trend</h3>
+                  <button onClick={() => setPeopleSamples([])} className="btn-secondary">
+                    <RotateCcw className="h-4 w-4" />
+                    Clear
+                  </button>
+                </div>
+                <div className="h-72">
+                  <Line data={peopleChartData} options={peopleChartOptions} />
+                </div>
+              </div>
+            </div>
+          )}
+        </Panel>
+      </div>
+
       <div className="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(420px,0.9fr)]">
         <Panel className="p-5">
           <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -751,21 +958,53 @@ export default function QueueFlowDashboard() {
             <h2 className="text-base font-semibold text-slate-950">Exceptions</h2>
           </div>
 
-          {queueState.appearance_rejections.length === 0 && queueState.completed.length === 0 ? (
+          {(queueState.pending_queue?.length || 0) === 0 &&
+          queueState.completed.length === 0 ? (
             <EmptyState icon={ShieldAlert} title="No recent exceptions" />
           ) : (
             <div className="space-y-4">
-              {queueState.appearance_rejections.length > 0 && (
+              {(queueState.pending_queue?.length || 0) > 0 && (
                 <div>
-                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Appearance rejections</p>
+                  <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+                    Pending link — present in zone, not yet linked
+                  </p>
                   <div className="space-y-2">
-                    {queueState.appearance_rejections.slice().reverse().map((rejection, index) => (
-                      <div key={`${rejection.queue_number}-${index}`} className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-                        <span className="font-semibold">{rejection.queue_number}</span>
-                        <span className="mx-2 text-amber-700">mismatch at</span>
-                        <span>{rejection.at}</span>
-                      </div>
-                    ))}
+                    {queueState.pending_queue!.map((person) => {
+                      const alert = queueState.pending_link_alerts?.find((a) => a.track_id === person.track_id);
+                      return (
+                        <div key={person.track_id} className="rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+                          <div className="flex flex-wrap items-center justify-between gap-2">
+                            <span className="inline-flex items-center gap-2">
+                              <span className="font-semibold">
+                                {person.has_face_embedding ? 'Face detected' : 'Waiting for face'}
+                              </span>
+                              <span className="text-xs text-amber-600">camera #{person.track_id}</span>
+                            </span>
+                            {alert && <span className="text-xs text-amber-700">waiting {alert.seconds_waiting}s</span>}
+                          </div>
+                          <div className="mt-2 flex items-center gap-2">
+                            <input
+                              value={linkNumberByTrack[person.track_id] || ''}
+                              onChange={(e) =>
+                                setLinkNumberByTrack((current) => ({
+                                  ...current,
+                                  [person.track_id]: e.target.value.replace(/\D/g, ''),
+                                }))
+                              }
+                              placeholder="Ticket #"
+                              className="w-24 rounded-lg border border-amber-300 bg-white px-2.5 py-1.5 text-sm"
+                            />
+                            <button
+                              onClick={() => linkPending(person.track_id)}
+                              disabled={linkingTrackId === person.track_id}
+                              className="btn-secondary"
+                            >
+                              {linkingTrackId === person.track_id ? 'Linking…' : 'Link'}
+                            </button>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}

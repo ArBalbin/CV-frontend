@@ -51,7 +51,7 @@ export default function Login() {
     if (mode === 'login') {
       try {
         await login(username, password);
-        navigate('/computer-vision');
+        navigate('/queueflow');
       } catch (err: unknown) {
         setError(err instanceof Error ? err.message : 'Invalid credentials');
       } finally {
@@ -89,7 +89,7 @@ export default function Login() {
               <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-blue-500 shadow-lg shadow-blue-950/30">
                 <Activity className="h-12 w-12" />
               </div>
-              <h1 className="mt-7 text-4xl font-semibold tracking-normal">QUEUE FLOW</h1>
+              <h1 className="mt-7 text-4xl font-semibold tracking-normal">QueuEx</h1>
               <p className="mt-3 text-base text-slate-300">Operations console</p>
             </div>
           </div>
@@ -134,7 +134,7 @@ export default function Login() {
                 {mode === 'login' ? 'Staff sign in' : 'Create staff account'}
               </h2>
               <p className="mt-2 text-sm text-slate-500">
-                {mode === 'login' ? 'Access the Queue Flow dashboards.' : 'Register with your staff code.'}
+                {mode === 'login' ? 'Access the QueuEx dashboards.' : 'Register with your staff code.'}
               </p>
             </div>
 

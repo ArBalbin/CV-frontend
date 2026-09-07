@@ -4,8 +4,10 @@
 
 @layer base {
   :root {
-    color: #0f172a;
-    background: #f5f7fb;
+    /* Neutrals carry a slight cool-violet cast so they sit with the blue
+       accent instead of reading as flat default grey. */
+    color: #16182b;
+    background: #f4f5fa;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -20,8 +22,15 @@
     min-height: 100vh;
     margin: 0;
     background:
-      linear-gradient(180deg, rgba(248, 250, 252, 0.96), rgba(241, 245, 249, 0.96)),
-      #f5f7fb;
+      linear-gradient(180deg, rgba(249, 250, 253, 0.96), rgba(240, 242, 249, 0.96)),
+      #f4f5fa;
+  }
+
+  /* Numeric data lines up column-to-column instead of jittering as values
+     change on each poll. */
+  table,
+  .tabular {
+    font-variant-numeric: tabular-nums;
   }
 
   button,
@@ -54,15 +63,15 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #e2e8f0;
+  background: #e4e6ef;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #94a3b8;
+  background: #9296ad;
   border-radius: 999px;
-  border: 2px solid #e2e8f0;
+  border: 2px solid #e4e6ef;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: #676b85;
 }

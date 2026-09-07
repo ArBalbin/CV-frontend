@@ -68,10 +68,25 @@ export interface OnWayNotification {
   message: string;
 }
 
-export interface AppearanceRejection {
-  queue_number: string;
-  at: string;
-  reason: string;
+// A person the camera has confirmed present in the queue zone but hasn't
+// linked to a real (kiosk-printed or face-only-minted) number yet.
+export interface PendingPerson {
+  track_id: number;
+  identity_status: 'pending_link';
+  has_face_embedding: boolean;
+  bbox?: [number, number, number, number];
+}
+
+export interface PendingLinkAlert {
+  track_id: number;
+  seconds_waiting: number;
+  has_face_embedding: boolean;
+}
+
+export interface PendingQueueResponse {
+  pending_queue: PendingPerson[];
+  pending_count: number;
+  pending_link_alerts: PendingLinkAlert[];
 }
 
 export interface CompletedQueuePerson extends QueuePerson {
@@ -84,12 +99,15 @@ export interface CompletedQueuePerson extends QueuePerson {
 export interface QueueState {
   active_queue: QueuePerson[];
   queue_count: number;
-  next_number: number;
+  pending_count: number;
+  // Only present on staff-only endpoints (/api/queue/data) — the public
+  // /api/queue/list strips these two for privacy.
+  pending_queue?: PendingPerson[];
+  pending_link_alerts?: PendingLinkAlert[];
   total_served: number;
   completed: CompletedQueuePerson[];
   noshow_alerts: NoshowAlert[];
   on_way_notifications: OnWayNotification[];
-  appearance_rejections: AppearanceRejection[];
   counter_assignments: QueuePerson[];
   newly_called: NewlyCalled[];
   num_counters: number;
@@ -159,7 +177,7 @@ export interface QueueAnalytics {
     missing: number;
     active_counters: number;
     avg_service_time_min: number;
-    next_number: number;
+    pending_count: number;
     total_assigned: number;
     total_completed: number;
     total_served: number;
@@ -203,7 +221,6 @@ export interface QueueAnalytics {
   active_queue: QueuePrediction['active_queue'];
   recent_completed: CompletedQueuePerson[];
   noshow_alerts: NoshowAlert[];
-  appearance_rejections: AppearanceRejection[];
   zone: QueueZone;
   recommendation: string;
 }

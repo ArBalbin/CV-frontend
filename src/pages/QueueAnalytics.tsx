@@ -39,12 +39,11 @@ interface TrendSample {
 const emptyQueueState: QueueState = {
   active_queue: [],
   queue_count: 0,
-  next_number: 1,
+  pending_count: 0,
   total_served: 0,
   completed: [],
   noshow_alerts: [],
   on_way_notifications: [],
-  appearance_rejections: [],
   counter_assignments: [],
   newly_called: [],
   num_counters: 3,
@@ -72,10 +71,6 @@ function utilizationTone(value: number): 'green' | 'amber' | 'red' {
   return 'green';
 }
 
-function queueLabel(value: number) {
-  return `Q${String(value).padStart(3, '0')}`;
-}
-
 function analyticsToQueueData(analytics: QueueAnalyticsResponse): QueueData {
   const liveCrowd = analytics.live_crowd || emptyQueueData;
   const forecast = analytics.forecast;
@@ -85,7 +80,7 @@ function analyticsToQueueData(analytics: QueueAnalyticsResponse): QueueData {
     ...liveCrowd,
     queue_length: analytics.overview.queue_length,
     queue_count: analytics.overview.queue_length,
-    next_number: analytics.overview.next_number,
+    pending_count: analytics.overview.pending_count,
     total_served: analytics.overview.total_served,
     active_counters: analytics.overview.active_counters,
     estimated_wait_time: analytics.new_arrival?.estimated_wait_time_minutes || forecast?.now?.estimated_wait_time_minutes || 0,
@@ -93,7 +88,6 @@ function analyticsToQueueData(analytics: QueueAnalyticsResponse): QueueData {
     predicted_wait_15min: forecast?.in_15min?.estimated_wait_time_minutes || 0,
     predicted_wait_30min: forecast?.in_30min?.estimated_wait_time_minutes || 0,
     noshow_alerts: analytics.noshow_alerts || [],
-    appearance_rejections: analytics.appearance_rejections || [],
     completed: analytics.recent_completed || [],
   };
 }
@@ -288,7 +282,7 @@ export default function QueueAnalytics() {
       )}
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-6">
-        <MetricCard icon={Hash} label="Queue length" value={queueData.queue_count || queueData.queue_length} detail={`Next ${queueLabel(queueData.next_number)}`} tone="blue" />
+        <MetricCard icon={Hash} label="Queue length" value={queueData.queue_count || queueData.queue_length} detail={`${queueData.pending_count} pending link`} tone="blue" />
         <MetricCard icon={Clock3} label="Current wait" value={`${numberLabel(queueData.estimated_wait_time)} min`} detail="Estimated wait" tone="amber" />
         <MetricCard icon={TrendingUp} label="Arrival rate" value={numberLabel(queueData.arrival_rate, 2)} detail="People per minute" tone="teal" />
         <MetricCard icon={Gauge} label="Utilization" value={`${numberLabel(utilizationPercent, 1)}%`} detail="Service load" tone={utilizationPercent >= 90 ? 'red' : utilizationPercent >= 70 ? 'amber' : 'green'} />

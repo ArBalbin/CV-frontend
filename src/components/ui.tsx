@@ -33,17 +33,19 @@ export function Panel({ children, className = '' }: PanelProps) {
 
 export function MetricCard({ icon: Icon, label, value, detail, tone = 'blue' }: MetricCardProps) {
   return (
-    <Panel className="p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-          <p className="mt-3 text-3xl font-semibold tracking-normal text-slate-950">{value}</p>
-          {detail && <p className="mt-1 text-sm text-slate-500">{detail}</p>}
-        </div>
-        <div className={`rounded-lg border p-2.5 ${toneClasses[tone]}`}>
-          <Icon className="h-5 w-5" />
+    <Panel className="p-4">
+      <div className="flex items-start justify-between gap-2">
+        <p className="text-[11px] font-semibold uppercase leading-tight tracking-wide text-slate-500">
+          {label}
+        </p>
+        <div className={`shrink-0 rounded-lg border p-2 ${toneClasses[tone]}`}>
+          <Icon className="h-4 w-4" />
         </div>
       </div>
+      <p className="mt-2 text-2xl font-semibold tabular-nums tracking-normal text-slate-950">
+        {value}
+      </p>
+      {detail && <p className="mt-0.5 text-xs leading-snug text-slate-500">{detail}</p>}
     </Panel>
   );
 }

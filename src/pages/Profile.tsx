@@ -4,7 +4,6 @@ import {
   Activity,
   BarChart3,
   Database,
-  Eye,
   LogOut,
   RefreshCcw,
   Server,
@@ -21,16 +20,10 @@ import { formatDateTime } from '../utils/format';
 
 const dashboardAccess = [
   {
-    label: 'Computer Vision',
-    path: '/computer-vision',
-    icon: Eye,
-    detail: 'Live camera stream and queue zone monitoring',
-  },
-  {
-    label: 'Queue Flow',
+    label: 'QueuEx',
     path: '/queueflow',
     icon: Activity,
-    detail: 'Queue operations, counters, and no-show settings',
+    detail: 'Queue operations, counters, camera feed, and no-show settings',
   },
   {
     label: 'Queue Analytics',
