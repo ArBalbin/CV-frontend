@@ -4,8 +4,8 @@
 
 @layer base {
   :root {
-    color: #0f172a;
-    background: #f5f7fb;
+    color: #171a1f;
+    background: #f4f4f1;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -14,55 +14,251 @@
 
   html {
     min-height: 100%;
+    background: #f4f4f1;
   }
 
   body {
     min-height: 100vh;
     margin: 0;
-    background:
-      linear-gradient(180deg, rgba(248, 250, 252, 0.96), rgba(241, 245, 249, 0.96)),
-      #f5f7fb;
+    background: #f4f4f1;
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
   }
 
   button,
-  input {
+  input,
+  select,
+  textarea {
     font: inherit;
+  }
+
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    background: #0e7c86;
+    color: #ffffff;
   }
 }
 
 @layer components {
+  .app-shell {
+    @apply min-h-screen bg-[#15181d] text-ink;
+  }
+
+  .sidebar {
+    @apply fixed inset-y-0 left-0 z-40 hidden w-[238px] bg-[#15181d] text-white lg:block;
+  }
+
+  .sidebar-inner {
+    @apply flex h-full flex-col;
+  }
+
+  .brand {
+    @apply flex h-[76px] items-center gap-3 border-b border-white/[0.08] px-5;
+  }
+
+  .brand-mark {
+    @apply flex h-9 w-9 items-center justify-center bg-signal text-white;
+  }
+
+  .brand-name {
+    @apply text-[15px] font-semibold tracking-tight;
+  }
+
+  .brand-meta {
+    @apply mt-0.5 text-[11px] text-white/40;
+  }
+
+  .sidebar-section {
+    @apply px-3 pt-7;
+  }
+
+  .sidebar-label {
+    @apply mb-2 px-2 text-[10px] font-medium uppercase tracking-[0.14em] text-white/30;
+  }
+
+  .sidebar-nav {
+    @apply space-y-0.5;
+  }
+
+  .nav-item {
+    @apply relative flex w-full items-center gap-3 px-3 py-2.5 text-left text-[13px] font-medium text-white/55 transition;
+  }
+
+  .nav-item:hover {
+    @apply bg-white/[0.05] text-white/90;
+  }
+
+  .nav-item.active {
+    @apply bg-white/[0.09] text-white;
+  }
+
+  .nav-item.active::before {
+    content: "";
+    @apply absolute left-0 top-1/2 h-5 w-[2px] -translate-y-1/2 bg-signal;
+  }
+
+  .sidebar-bottom {
+    @apply mt-auto border-t border-white/[0.08] p-3;
+  }
+
+  .account-button {
+    @apply mb-2 flex w-full items-center gap-3 px-2 py-2 text-left transition hover:bg-white/[0.05];
+  }
+
+  .account-avatar {
+    @apply flex h-8 w-8 shrink-0 items-center justify-center bg-white/[0.08] text-white/70;
+  }
+
+  .account-copy {
+    @apply min-w-0;
+  }
+
+  .account-name {
+    @apply block truncate text-[13px] font-medium text-white/90;
+  }
+
+  .account-role {
+    @apply mt-0.5 block text-[10px] text-white/35;
+  }
+
+  .logout-button {
+    @apply flex w-full items-center gap-2 px-2 py-2 text-[12px] font-medium text-white/40 transition hover:bg-white/[0.05] hover:text-white/80;
+  }
+
+  .main-shell {
+    @apply min-h-screen lg:pl-[238px];
+  }
+
+  .topbar {
+    @apply sticky top-0 z-30 border-b border-zinc-600/50 bg-zinc-800/90 backdrop-blur-md;
+  }
+
+  .topbar-inner {
+    @apply mx-auto flex min-h-[76px] max-w-[1800px] items-center justify-between gap-5 px-4 sm:px-6 lg:px-8;
+  }
+
+  .page-heading {
+    @apply min-w-0;
+  }
+
+  .page-heading h1 {
+    @apply truncate text-[22px] font-semibold tracking-[-0.025em] text-zinc-300 sm:text-[25px];
+  }
+
+  .page-heading p {
+    @apply mt-1 hidden text-[12px] text-ink-soft sm:block;
+  }
+
+  .topbar-actions {
+    @apply flex shrink-0 flex-wrap items-center justify-end gap-2;
+  }
+
+  .mobile-nav {
+    @apply flex gap-1 overflow-x-auto border-t border-line/70 px-4 py-2 lg:hidden;
+  }
+
+  .mobile-nav-item {
+    @apply inline-flex shrink-0 items-center gap-2 px-3 py-2 text-[12px] font-medium text-ink-soft transition;
+  }
+
+  .mobile-nav-item.active {
+    @apply bg-ink text-white;
+  }
+
+  .page-content {
+    @apply mx-auto max-w-[1800px] px-4 py-6 sm:px-6 lg:px-8 lg:py-7;
+  }
+
+  .surface {
+    @apply border border-line bg-white;
+  }
+
+  .metric {
+    @apply flex min-h-[128px] items-start justify-between border border-line bg-white p-5;
+  }
+
+  .metric-icon-wrap {
+    @apply order-2;
+  }
+
+  .metric-icon {
+    @apply flex h-9 w-9 items-center justify-center;
+  }
+
+  .metric-label {
+    @apply text-[10px] font-medium uppercase tracking-[0.12em] text-ink-faint;
+  }
+
+  .metric-value {
+    @apply mt-3 font-mono text-[28px] font-semibold leading-none tracking-[-0.03em] text-ink;
+  }
+
+  .metric-detail {
+    @apply mt-2 text-[12px] text-ink-soft;
+  }
+
+  .status-badge {
+    @apply inline-flex items-center gap-2 border border-line bg-white px-2.5 py-1.5 text-[11px] font-medium;
+  }
+
+  .status-dot {
+    @apply h-1.5 w-1.5 rounded-full;
+  }
+
+  .empty-state {
+    @apply flex min-h-40 flex-col items-center justify-center border border-dashed border-line px-6 py-8 text-center;
+  }
+
+  .empty-icon {
+    @apply flex h-9 w-9 items-center justify-center bg-ink/[0.04] text-ink-faint;
+  }
+
+  .progress-track {
+    @apply h-1.5 w-full overflow-hidden bg-line/50;
+  }
+
+  .progress-value {
+    @apply h-full transition-all duration-300;
+  }
+
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-4 focus:ring-blue-100 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex items-center justify-center gap-2 bg-green-700 px-3.5 py-2 text-[12px] font-medium text-white transition hover:bg-green-900 focus:outline-none focus:ring-2 focus:ring-signal/20 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 focus:outline-none focus:ring-4 focus:ring-slate-100 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex items-center justify-center gap-2 border border-line bg-white px-3.5 py-2 text-[12px] font-medium text-ink transition hover:border-ink/30 hover:bg-zinc-400 focus:outline-none focus:ring-2 focus:ring-ink/10 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .btn-danger {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-red-200 bg-white px-4 py-2 text-sm font-semibold text-red-600 shadow-sm transition hover:bg-red-50 focus:outline-none focus:ring-4 focus:ring-red-100 disabled:cursor-not-allowed disabled:opacity-60;
+    @apply inline-flex items-center justify-center gap-2 border border-brick-signal/25 bg-brick-signal px-3.5 py-2 text-[12px] font-medium text-white transition hover:bg-brick-signal/60 focus:outline-none focus:ring-2 focus:ring-brick-signal/15 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
   .field {
-    @apply w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:ring-4 focus:ring-blue-100;
+    @apply w-full border border-line bg-white px-3 py-2.5 text-[13px] text-ink outline-none transition placeholder:text-ink-faint focus:border-signal focus:ring-2 focus:ring-signal/15;
   }
 }
 
 ::-webkit-scrollbar {
-  height: 10px;
-  width: 10px;
+  height: 8px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #e2e8f0;
+  background: #f4f4f1;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #94a3b8;
+  background: #c8c8c1;
   border-radius: 999px;
-  border: 2px solid #e2e8f0;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #64748b;
+  background: #aaa9a1;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c8c8c1 #f4f4f1;
 }

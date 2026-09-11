@@ -1,5 +1,6 @@
-import { ReactNode } from 'react';
-import { LucideIcon } from 'lucide-react';
+import { ReactNode } from "react";
+import { IconType } from "react-icons";
+import { FaUsersBetweenLines } from "react-icons/fa6";
 
 interface PanelProps {
   children: ReactNode;
@@ -7,91 +8,139 @@ interface PanelProps {
 }
 
 interface MetricCardProps {
-  icon: LucideIcon;
+  icon: IconType;
   label: string;
   value: string | number;
   detail?: string;
-  tone?: 'blue' | 'teal' | 'amber' | 'red' | 'slate' | 'green';
+  tone?: "blue" | "teal" | "amber" | "red" | "slate" | "green";
 }
 
-const toneClasses = {
-  blue: 'bg-blue-50 text-blue-700 border-blue-100',
-  teal: 'bg-teal-50 text-teal-700 border-teal-100',
-  amber: 'bg-amber-50 text-amber-700 border-amber-100',
-  red: 'bg-red-50 text-red-700 border-red-100',
-  slate: 'bg-slate-50 text-slate-700 border-slate-200',
-  green: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+const iconToneClasses = {
+  blue: "text-sky-400",
+  teal: "text-teal-400",
+  amber: "text-amber-400",
+  red: "text-rose-400",
+  slate: "text-zinc-400",
+  green: "text-emerald-400",
 };
 
-export function Panel({ children, className = '' }: PanelProps) {
+export function Panel({ children, className = "" }: PanelProps) {
   return (
-    <section className={`rounded-lg border border-slate-200 bg-white shadow-sm ${className}`}>
+    <section
+      className={`relative overflow-hidden rounded-[3px] bg-zinc-800/90 ring-1 ring-zinc-700/70 shadow-lg transition-all hover:ring-zinc-600 ${className}`}
+    >
       {children}
     </section>
   );
 }
 
-export function MetricCard({ icon: Icon, label, value, detail, tone = 'blue' }: MetricCardProps) {
+export function MetricCard({
+  icon: Icon,
+  label,
+  value,
+  detail,
+  tone = "blue",
+}: MetricCardProps) {
   return (
-    <Panel className="p-5">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">{label}</p>
-          <p className="mt-3 text-3xl font-semibold tracking-normal text-slate-950">{value}</p>
-          {detail && <p className="mt-1 text-sm text-slate-500">{detail}</p>}
-        </div>
-        <div className={`rounded-lg border p-2.5 ${toneClasses[tone]}`}>
-          <Icon className="h-5 w-5" />
-        </div>
+    <div className="flex flex-col justify-between p-4 sm:p-5 bg-zinc-800/60 hover:bg-zinc-800 transition-colors">
+      <div className="flex items-center justify-between gap-2">
+        <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-zinc-400">
+          {label}
+        </span>
+        <Icon className={`h-4 w-4 shrink-0 ${iconToneClasses[tone]}`} />
       </div>
-    </Panel>
+
+      <div className="mt-4">
+        <p className="font-mono text-2xl sm:text-3xl font-bold tracking-tight text-zinc-100 tabular-nums">
+          {value}
+        </p>
+      </div>
+
+      {detail && (
+        <>
+          <div className="h-px bg-zinc-700/60 -mx-4 sm:-mx-5 my-3" />
+          <p className="text-xs font-medium text-zinc-400 truncate">{detail}</p>
+        </>
+      )}
+    </div>
   );
 }
 
 export function StatusBadge({
   label,
-  tone = 'slate',
+  tone = "slate",
 }: {
   label: string;
-  tone?: 'green' | 'amber' | 'red' | 'blue' | 'slate';
+  tone?: "green" | "amber" | "red" | "blue" | "slate";
 }) {
-  const classes = {
-    green: 'border-emerald-200 bg-emerald-50 text-emerald-700',
-    amber: 'border-amber-200 bg-amber-50 text-amber-700',
-    red: 'border-red-200 bg-red-50 text-red-700',
-    blue: 'border-blue-200 bg-blue-50 text-blue-700',
-    slate: 'border-slate-200 bg-slate-50 text-slate-700',
+  const dotClasses = {
+    green: "bg-emerald-400",
+    amber: "bg-amber-400",
+    red: "bg-rose-400",
+    blue: "bg-sky-400",
+    slate: "bg-zinc-400",
+  };
+
+  const containerClasses = {
+    green: "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
+    amber: "border-amber-500/30 bg-amber-500/10 text-amber-300",
+    red: "border-rose-500/30 bg-rose-500/10 text-rose-300",
+    blue: "border-sky-500/30 bg-sky-500/10 text-sky-300",
+    slate: "border-zinc-700 bg-zinc-800 text-zinc-300",
   };
 
   return (
-    <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold ${classes[tone]}`}>
+    <span
+      className={`inline-flex items-center gap-2 border px-3 py-1 text-xs font-semibold tracking-wide ${containerClasses[tone]}`}
+    >
+      <span className={`h-1.5 w-1.5 rounded-full ${dotClasses[tone]}`} />
       {label}
     </span>
   );
 }
 
-export function EmptyState({ icon: Icon, title, detail }: { icon: LucideIcon; title: string; detail?: string }) {
+export function EmptyState({
+  title,
+  detail,
+}: {
+  icon: IconType;
+  title: string;
+  detail?: string;
+}) {
   return (
-    <div className="flex min-h-44 flex-col items-center justify-center rounded-lg border border-dashed border-slate-200 bg-slate-50 px-6 py-8 text-center">
-      <Icon className="h-9 w-9 text-slate-300" />
-      <p className="mt-3 text-sm font-semibold text-slate-700">{title}</p>
-      {detail && <p className="mt-1 max-w-sm text-sm text-slate-500">{detail}</p>}
+    <div className="flex h-full w-full flex-col items-center justify-center rounded-lg border-2 border-dashed border-zinc-700 bg-zinc-800/40 px-6 py-10 text-center">
+      <div>
+        <FaUsersBetweenLines className="h-20 w-auto text-zinc-500 opacity-80" />
+      </div>
+      <p className="mt-3 text-2xl font-bold text-zinc-100">{title}</p>
+      {detail && (
+        <p className="mt-1 max-w-xs text-xs text-zinc-400">{detail}</p>
+      )}
     </div>
   );
 }
 
-export function ProgressBar({ value, tone = 'blue' }: { value: number; tone?: 'blue' | 'green' | 'amber' | 'red' }) {
+export function ProgressBar({
+  value,
+  tone = "blue",
+}: {
+  value: number;
+  tone?: "blue" | "green" | "amber" | "red";
+}) {
   const safeValue = Math.max(0, Math.min(100, value));
   const classes = {
-    blue: 'bg-blue-600',
-    green: 'bg-emerald-600',
-    amber: 'bg-amber-500',
-    red: 'bg-red-500',
+    blue: "bg-sky-500",
+    green: "bg-emerald-500",
+    amber: "bg-amber-500",
+    red: "bg-rose-500",
   };
 
   return (
-    <div className="h-2 overflow-hidden rounded-full bg-slate-100">
-      <div className={`h-full rounded-full ${classes[tone]}`} style={{ width: `${safeValue}%` }} />
+    <div className="h-2 overflow-hidden rounded-full bg-zinc-700 p-0.5">
+      <div
+        className={`h-full rounded-full transition-all duration-500 ease-out ${classes[tone]}`}
+        style={{ width: `${safeValue}%` }}
+      />
     </div>
   );
 }

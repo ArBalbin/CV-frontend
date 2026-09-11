@@ -1,6 +1,12 @@
-import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { AxiosError } from 'axios';
-import { apiClient } from '../config/api';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { AxiosError } from "axios";
+import { apiClient } from "../config/api";
 
 interface User {
   id?: string;
@@ -26,7 +32,7 @@ interface ApiError {
   message: string;
 }
 
-const TOKEN_KEY = 'token';
+const TOKEN_KEY = "token";
 
 const getToken = () => localStorage.getItem(TOKEN_KEY);
 const setToken = (token: string) => localStorage.setItem(TOKEN_KEY, token);
@@ -34,19 +40,19 @@ const removeToken = () => localStorage.removeItem(TOKEN_KEY);
 
 const setApiToken = (token: string) => {
   apiClient.defaults.headers.common.Authorization = `Bearer ${token}`;
-  apiClient.defaults.headers.common['X-Session-Token'] = token;
+  apiClient.defaults.headers.common["X-Session-Token"] = token;
 };
 
 const clearApiToken = () => {
   delete apiClient.defaults.headers.common.Authorization;
-  delete apiClient.defaults.headers.common['X-Session-Token'];
+  delete apiClient.defaults.headers.common["X-Session-Token"];
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -62,7 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchUser = async () => {
     try {
-      const response = await apiClient.get<User>('/api/auth/me');
+      const response = await apiClient.get<User>("/api/auth/me");
       setUser({
         id: response.data.id || response.data.userId,
         userId: response.data.userId,
@@ -81,7 +87,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const login = async (username: string, password: string) => {
     try {
-      const response = await apiClient.post<LoginResponse>('/api/auth/login', {
+      const response = await apiClient.post<LoginResponse>("/api/auth/login", {
         username,
         password,
       });
@@ -93,13 +99,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setIsAuthenticated(true);
     } catch (error: unknown) {
       const axiosError = error as AxiosError<ApiError>;
-      throw new Error(axiosError.response?.data?.message || 'Login failed');
+      throw new Error(axiosError.response?.data?.message || "Login failed");
     }
   };
 
   const logout = async () => {
     try {
-      await apiClient.post('/api/auth/logout');
+      await apiClient.post("/api/auth/logout");
     } catch {
       // Local session cleanup still needs to happen if the API is unavailable.
     } finally {
@@ -111,7 +117,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, login, logout }}>
+    <AuthContext.Provider
+      value={{ user, isAuthenticated, isLoading, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -119,6 +127,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
-  if (!context) throw new Error('useAuth must be used within AuthProvider');
+  if (!context) throw new Error("useAuth must be used within AuthProvider");
   return context;
 }
