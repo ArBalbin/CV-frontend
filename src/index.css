@@ -1,0 +1,268 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color: #f4f4f5;
+    background: #181d24;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  html {
+    min-height: 100%;
+    background: #181d24;
+  }
+
+  body {
+    min-height: 100vh;
+    margin: 0;
+    background: #181d24;
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+  }
+
+  table,
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  ::selection {
+    background: #0e7c86;
+    color: #ffffff;
+  }
+}
+
+@layer components {
+  /* ---------- shell / chrome ---------- */
+  .app-shell {
+    @apply min-h-screen bg-paper text-ink;
+  }
+
+  .sidebar {
+    @apply fixed inset-y-0 left-0 z-30 hidden w-60 bg-[#212833] text-zinc-100 lg:block border-r border-zinc-700 shadow-2xl;
+  }
+
+  .sidebar-inner {
+    @apply flex h-full flex-col;
+  }
+
+  .brand {
+    @apply flex items-center gap-3 border-b border-zinc-700 px-6 py-6;
+  }
+
+  .brand-mark {
+    @apply flex h-10 w-10 items-center justify-center bg-emerald-400 text-zinc-950 font-bold shadow-md;
+  }
+
+  .brand-name {
+    @apply text-sm font-semibold tracking-tight text-zinc-100;
+  }
+
+  .brand-meta {
+    @apply text-xs text-zinc-400;
+  }
+
+  .sidebar-section {
+    @apply flex-1 px-4 py-5;
+  }
+
+  .sidebar-label {
+    @apply mb-2 px-2 text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-400;
+  }
+
+  .sidebar-nav {
+    @apply space-y-1.5;
+  }
+
+  .nav-item {
+    @apply relative flex w-full items-center gap-3 px-3 py-2.5 text-left text-[13px] font-medium text-zinc-300 transition rounded-sm;
+  }
+
+  .nav-item:hover {
+    @apply bg-zinc-700/80 text-zinc-100 shadow-sm;
+  }
+
+  .nav-item.active {
+    @apply bg-zinc-700 text-zinc-100 shadow-md;
+  }
+
+  .nav-item.active::before {
+    content: "";
+    @apply absolute left-0 top-1/2 h-5 w-[2.5px] -translate-y-1/2 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)];
+  }
+
+  .sidebar-bottom {
+    @apply p-4;
+  }
+
+  .account-button {
+    @apply mb-3 flex w-full items-center gap-3 bg-[#283140] border border-zinc-600/80 p-3 text-left transition hover:bg-zinc-700/90 rounded-md shadow-sm;
+  }
+
+  .account-avatar {
+    @apply flex rounded-full h-9 w-9 shrink-0 items-center justify-center bg-zinc-700 text-zinc-200 shadow-inner;
+  }
+
+  .account-copy {
+    @apply min-w-0;
+  }
+
+  .account-name {
+    @apply block truncate text-sm font-semibold text-zinc-100;
+  }
+
+  .account-role {
+    @apply mt-0.5 block text-xs text-zinc-400;
+  }
+
+  .logout-button {
+    @apply flex w-full items-center justify-center gap-2 border border-zinc-600/80 bg-[#283140] px-3 py-2 text-[13px] font-medium text-zinc-200 transition hover:bg-zinc-700 hover:text-zinc-100 rounded-md shadow-sm;
+  }
+
+  .main-shell {
+    @apply min-h-screen lg:pl-60 bg-[#181d24] text-zinc-100;
+  }
+
+  .topbar {
+    @apply sticky top-0 z-20 border-b border-zinc-600 bg-[#212833] backdrop-blur shadow-sm;
+  }
+
+  .topbar-inner {
+    @apply mx-auto flex max-w-[1800px] flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8;
+  }
+
+  .eyebrow-chip {
+    @apply mb-2 inline-flex items-center gap-2 border border-zinc-600 bg-[#283140] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-zinc-200 shadow-sm;
+  }
+
+  .page-heading h1 {
+    @apply text-2xl uppercase font-mono font-semibold tracking-[-0.02em] text-zinc-100 md:text-3xl;
+  }
+
+  .page-heading p {
+    @apply mt-1 text-sm text-zinc-400;
+  }
+
+  .topbar-actions {
+    @apply flex flex-wrap items-center gap-2;
+  }
+
+  .mobile-nav {
+    @apply flex gap-2 overflow-x-auto lg:hidden;
+  }
+
+  .mobile-nav-item {
+    @apply inline-flex shrink-0 items-center gap-2 border border-zinc-600 bg-[#283140] px-3 py-2 text-[12px] font-medium text-zinc-200 transition shadow-sm;
+  }
+
+  .mobile-nav-item.active {
+    @apply border-zinc-400 bg-zinc-700 text-zinc-100 shadow-md;
+  }
+
+  .page-content {
+    @apply mx-auto max-w-[1800px] px-4 py-6 sm:px-6 lg:px-8 lg:py-7;
+  }
+
+  /* ---------- surfaces / cards ---------- */
+  .surface {
+    @apply border border-zinc-600/80 bg-[#212833] shadow-lg shadow-black/25;
+  }
+
+  .metric {
+    @apply flex min-h-[128px] flex-col justify-between border border-zinc-600/80 bg-[#212833] p-5 shadow-lg shadow-black/25 transition hover:border-zinc-500 hover:shadow-xl;
+  }
+
+  .metric-icon {
+    @apply flex h-9 w-9 items-center justify-center text-zinc-200 bg-zinc-700/50 rounded;
+  }
+
+  .metric-label {
+    @apply text-[10px] font-medium uppercase tracking-[0.12em] text-zinc-400;
+  }
+
+  .metric-value {
+    @apply mt-3 font-mono text-[26px] font-semibold leading-none tracking-[-0.03em] text-white;
+  }
+
+  .metric-detail {
+    @apply mt-2 text-[12px] text-zinc-300;
+  }
+
+  .status-badge {
+    @apply inline-flex items-center gap-2 border border-zinc-600 bg-[#283140] px-2.5 py-1.5 text-[11px] font-medium text-zinc-200 shadow-sm;
+  }
+
+  .status-dot {
+    @apply h-1.5 w-1.5 rounded-full;
+  }
+
+  .empty-state {
+    @apply flex min-h-40 flex-col items-center justify-center border border-dashed border-zinc-600 bg-[#212833]/60 px-6 py-8 text-center shadow-inner;
+  }
+
+  .empty-icon {
+    @apply flex h-9 w-9 items-center justify-center bg-zinc-700 text-zinc-200;
+  }
+
+  .progress-track {
+    @apply h-2 w-full overflow-hidden bg-zinc-700 rounded-full;
+  }
+
+  .progress-value {
+    @apply h-full transition-all duration-300 bg-emerald-400 rounded-full;
+  }
+
+  /* ---------- form controls ---------- */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 bg-emerald-400 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 shadow-md;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 border border-zinc-500 bg-[#283140] px-4 py-2.5 text-sm font-medium text-zinc-100 transition hover:border-zinc-400 hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-400 shadow-sm;
+  }
+
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 border border-red-700/80 bg-red-600 px-4 py-2.5 text-sm font-medium text-red-100 transition hover:bg-red-900/60 focus:outline-none focus:ring-2 focus:ring-red-500/30 shadow-sm;
+  }
+
+  .field {
+    @apply w-full border border-zinc-500 bg-[#212833] px-3 py-2.5 text-sm text-zinc-100 outline-none transition placeholder:text-zinc-400 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 shadow-inner;
+  }
+}
+
+::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #181d24;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #4b5563 #181d24;
+}
