@@ -28,9 +28,9 @@ export function LoginForm({
     <div>
       <div className="mb-8">
         <div className="flex items-center gap-3 mb-3">
-          <h2 className="text-xl uppercase font-semibold text-white">Sign In</h2>
+          <h2 className="text-xl uppercase font-semibold text-zinc-900">Sign In</h2>
         </div>
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-zinc-500">
           Access your queue management dashboard
         </p>
       </div>
@@ -39,18 +39,18 @@ export function LoginForm({
         <div>
           <label
             htmlFor="username"
-            className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-400"
+            className="mb-2 block text-xs font-semibold uppercase tracking-wide text-zinc-500"
           >
             Username
           </label>
           <div className="relative">
-            <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+            <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
             <input
               type="text"
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full rounded-sm border border-slate-700 bg-slate-800/50 px-10 py-2.5 text-sm text-slate-100 placeholder-slate-500 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
+              className="w-full rounded-sm border border-zinc-300 bg-white px-10 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
               placeholder="staff_username"
               required
               autoFocus
@@ -61,25 +61,25 @@ export function LoginForm({
         <div>
           <label
             htmlFor="password"
-            className="mb-2 block text-xs font-semibold uppercase tracking-wide text-slate-400"
+            className="mb-2 block text-xs font-semibold uppercase tracking-wide text-zinc-500"
           >
             Password
           </label>
           <div className="relative">
-            <LockKeyhole className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+            <LockKeyhole className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
             <input
               type={showPassword ? "text" : "password"}
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full rounded-sm border border-slate-700 bg-slate-800/50 px-10 py-2.5 text-sm text-slate-100 placeholder-slate-500 outline-none transition focus:border-blue-600 focus:ring-2 focus:ring-blue-600/20"
+              className="w-full rounded-sm border border-zinc-300 bg-white px-10 py-2.5 text-sm text-zinc-900 placeholder-zinc-400 outline-none transition focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20"
               placeholder="••••••••"
               required
             />
             <button
               type="button"
               onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-400 transition"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600 transition"
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? (
@@ -94,19 +94,19 @@ export function LoginForm({
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-sm bg-blue-600 hover:bg-blue-900 disabled:bg-slate-700 disabled:cursor-not-allowed py-2.5 text-sm font-semibold text-white transition shadow-lg"
+          className="w-full rounded-sm bg-emerald-600 hover:bg-emerald-700 disabled:bg-zinc-300 disabled:cursor-not-allowed py-2.5 text-sm font-semibold text-white transition shadow-lg"
         >
           {loading ? "Signing in..." : "Sign In"}
         </button>
       </form>
 
       <div className="mt-6 text-center">
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-zinc-500">
           Don't have an account?{" "}
           <button
             type="button"
             onClick={onToggleMode}
-            className="font-semibold text-blue-400 hover:text-blue-300 transition"
+            className="font-semibold text-emerald-600 hover:text-emerald-700 transition"
           >
             Register
           </button>

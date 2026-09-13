@@ -23,21 +23,21 @@ export default function ServiceControlsPanel({
   onSaveNoshow,
 }: ServiceControlsPanelProps) {
   return (
-    <Panel className="p-5 border border-zinc-600/80 bg-[#212833] shadow-lg shadow-black/25 rounded-sm transition hover:border-zinc-500 text-zinc-100">
+    <Panel className="p-5 border border-zinc-200/80 bg-white shadow-sm rounded-sm transition hover:border-zinc-300 text-zinc-900">
       <div className="mb-4 flex items-center gap-2.5">
-        <Settings className="h-5 w-5 text-zinc-400" />
-        <h2 className="text-base font-semibold text-zinc-100">
+        <Settings className="h-5 w-5 text-zinc-500" />
+        <h2 className="text-base font-semibold text-zinc-900">
           Service Controls
         </h2>
       </div>
 
-      <div className="h-px bg-zinc-500 mb-4 -mx-5"/>
+      <div className="h-px bg-zinc-300 mb-4 -mx-5"/>
 
 
       <div className="space-y-5">
-        <div className="rounded-md border border-zinc-600/60 bg-[#283140] p-4 shadow-sm">
+        <div className="rounded-md border border-zinc-200/60 bg-zinc-100 p-4 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
-            <label className="text-sm font-semibold text-zinc-300">
+            <label className="text-sm font-semibold text-zinc-600">
               Active counters
             </label>
             <StatusBadge label={`${activeCounters} open`} tone="blue" />
@@ -45,18 +45,18 @@ export default function ServiceControlsPanel({
           <div className="flex items-center gap-3">
             <button
               onClick={() => onAdjustCounters(-1)}
-              className="rounded-md border border-zinc-600/60 bg-[#212833] px-3 py-2 text-zinc-100 hover:bg-zinc-700 transition shadow-sm"
+              className="rounded-md border border-zinc-200/60 bg-white px-3 py-2 text-zinc-900 hover:bg-zinc-100 transition shadow-sm"
               aria-label="Decrease counters"
               title="Decrease counters"
             >
               <Minus className="h-4 w-4" />
             </button>
-            <div className="flex h-11 min-w-16 items-center justify-center rounded-md border border-zinc-600/60 bg-[#212833] font-mono text-xl font-semibold text-zinc-100 shadow-sm">
+            <div className="flex h-11 min-w-16 items-center justify-center rounded-md border border-zinc-200/60 bg-white font-mono text-xl font-semibold text-zinc-900 shadow-sm">
               {activeCounters}
             </div>
             <button
               onClick={() => onAdjustCounters(1)}
-              className="rounded-md border border-zinc-600/60 bg-[#212833] px-3 py-2 text-zinc-100 hover:bg-zinc-700 transition shadow-sm"
+              className="rounded-md border border-zinc-200/60 bg-white px-3 py-2 text-zinc-900 hover:bg-zinc-100 transition shadow-sm"
               aria-label="Increase counters"
               title="Increase counters"
             >
@@ -65,11 +65,11 @@ export default function ServiceControlsPanel({
           </div>
         </div>
 
-        <div className="rounded-md border border-zinc-600/60 bg-[#283140] p-4 shadow-sm">
+        <div className="rounded-md border border-zinc-200/60 bg-zinc-100 p-4 shadow-sm">
           <div className="mb-3 flex items-center justify-between">
             <label
               htmlFor="noshow-window"
-              className="text-sm font-semibold text-zinc-300"
+              className="text-sm font-semibold text-zinc-600"
             >
               No-show window
             </label>
@@ -83,17 +83,17 @@ export default function ServiceControlsPanel({
               max={300}
               value={noshowInput}
               onChange={(event) => onNoshowInputChange(event.target.value)}
-              className="w-28 rounded-md border border-zinc-600/60 bg-[#212833] px-3 py-2 text-sm font-mono text-zinc-100 focus:outline-none focus:ring-1 focus:ring-zinc-500 shadow-sm"
+              className="w-28 rounded-md border border-zinc-200/60 bg-white px-3 py-2 text-sm font-mono text-zinc-900 focus:outline-none focus:ring-1 focus:ring-zinc-300 shadow-sm"
             />
             <button
               onClick={onSaveNoshow}
               disabled={savingNoshow}
-              className="rounded-md border border-zinc-600/60 bg-[#212833] px-4 py-2 text-sm font-medium text-zinc-100 hover:bg-zinc-700 disabled:opacity-50 shadow-sm transition"
+              className="rounded-md border border-zinc-200/60 bg-white px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-100 disabled:opacity-50 shadow-sm transition"
             >
               {savingNoshow ? "Saving" : savedNoshow ? "Saved" : "Apply"}
             </button>
           </div>
-          <p className="mt-2 text-xs text-zinc-400">
+          <p className="mt-2 text-xs text-zinc-500">
             Allowed range: 30 to 300 seconds.
           </p>
         </div>

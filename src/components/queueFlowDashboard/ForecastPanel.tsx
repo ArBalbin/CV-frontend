@@ -20,15 +20,15 @@ export default function ForecastPanel({
   utilizationPercent,
 }: ForecastPanelProps) {
   return (
-    <Panel className="p-5 border border-zinc-600/80 bg-[#212833] shadow-lg shadow-black/25 rounded-sm transition hover:border-zinc-500 text-zinc-100">
+    <Panel className="p-5 border border-zinc-200/80 bg-white shadow-sm rounded-sm transition hover:border-zinc-300 text-zinc-900">
       <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-base font-semibold text-zinc-100">
+          <h2 className="text-base font-semibold text-zinc-900">
             Wait-Time Forecast
           </h2>
-          <p className="mt-1 text-sm text-zinc-400">
+          <p className="mt-1 text-sm text-zinc-500">
             New arrival:{" "}
-            <span className="font-semibold text-zinc-100">
+            <span className="font-semibold text-zinc-900">
               {prediction?.new_arrival.estimated_wait_time_label ||
                 `${numberLabel(data.estimated_wait_time)} min`}
             </span>
@@ -44,38 +44,38 @@ export default function ForecastPanel({
         />
       </div>
 
-      <div className="h-px bg-zinc-500 mb-4 -mx-5"/>
+      <div className="h-px bg-zinc-300 mb-4 -mx-5"/>
 
       <div className="grid gap-3 md:grid-cols-4">
         {forecastCards.map((forecast) => (
           <div
             key={forecast.horizon_minutes}
-            className="rounded-md border border-zinc-600/60 bg-[#283140] p-4 text-zinc-100 shadow-sm"
+            className="rounded-md border border-zinc-200/60 bg-zinc-100 p-4 text-zinc-900 shadow-sm"
           >
             <div className="flex items-center justify-between gap-2">
-              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+              <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
                 {forecast.horizon_minutes === 0
                   ? "Now"
                   : `In ${forecast.horizon_minutes} min`}
               </span>
-              <Clock3 className="h-4 w-4 text-emerald-400" />
+              <Clock3 className="h-4 w-4 text-emerald-600" />
             </div>
-            <p className="mt-4 font-mono text-2xl font-semibold text-zinc-100">
+            <p className="mt-4 font-mono text-2xl font-semibold text-zinc-900">
               {forecast.estimated_wait_time_label}
             </p>
-            <p className="mt-1 text-xs text-zinc-400">
+            <p className="mt-1 text-xs text-zinc-500">
               {numberLabel(forecast.estimated_wait_time_minutes)} minutes
             </p>
           </div>
         ))}
       </div>
 
-      <div className="mt-5 rounded-md border border-zinc-600/60 bg-[#283140] p-4 shadow-sm">
+      <div className="mt-5 rounded-md border border-zinc-200/60 bg-zinc-100 p-4 shadow-sm">
         <div className="mb-3 flex items-center justify-between text-sm">
-          <span className="font-semibold text-zinc-300">
+          <span className="font-semibold text-zinc-600">
             System utilization
           </span>
-          <span className="font-mono font-semibold text-zinc-100">
+          <span className="font-mono font-semibold text-zinc-900">
             {numberLabel(utilizationPercent, 1)}%
           </span>
         </div>

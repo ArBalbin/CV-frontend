@@ -23,17 +23,17 @@ export default function CameraPanel({
   onRetry,
 }: CameraPanelProps) {
   return (
-    <Panel className="overflow-hidden border border-zinc-600/80 bg-[#212833] shadow-lg shadow-black/25 rounded-sm">
-      <div className="flex items-center justify-between pb-2 bg-[#212833]">
+    <Panel className="overflow-hidden border border-zinc-200/80 bg-white shadow-sm rounded-sm">
+      <div className="flex items-center justify-between pb-2 bg-white">
         <div className="flex items-center gap-3">
-          <div className="rounded-md bg-zinc-700/60 p-2.5 text-emerald-400 shadow-inner">
+          <div className="rounded-md bg-zinc-100/60 p-2.5 text-emerald-600 shadow-inner">
             <FaVideo className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-base font-semibold text-zinc-100">
+            <h2 className="text-base font-semibold text-zinc-900">
               Queue Camera
             </h2>
-            <p className="text-xs text-zinc-400 mt-0.5">
+            <p className="text-xs text-zinc-500 mt-0.5">
               Updated {formatTimestamp(data.timestamp)}
             </p>
           </div>
@@ -43,10 +43,10 @@ export default function CameraPanel({
           tone={health?.snapshot ? "green" : "amber"}
         />
       </div>
-      <div className="h-px bg-zinc-500 mb-4 -mx-5" />
+      <div className="h-px bg-zinc-300 mb-4 -mx-5" />
 
-      <div className="bg-[#181d24]">
-        <div className="aspect-video overflow-hidden rounded-md border border-zinc-700/60 bg-black/40">
+      <div className="bg-zinc-50">
+        <div className="aspect-video overflow-hidden rounded-md border border-zinc-100/60 bg-black/85">
           {!streamError ? (
             <img
               key={streamKey}
@@ -56,16 +56,16 @@ export default function CameraPanel({
               onError={onStreamError}
             />
           ) : (
-            <div className="flex h-full items-center justify-center px-6 text-center text-zinc-400">
+            <div className="flex h-full items-center justify-center px-6 text-center text-zinc-500">
               <div>
-                <FaVideoSlash className="mx-auto h-10 w-10 text-zinc-500" />
-                <p className="mt-3 text-sm font-semibold text-zinc-200">
+                <FaVideoSlash className="mx-auto h-10 w-10 text-zinc-100" />
+                <p className="mt-3 text-sm font-semibold text-zinc-100">
                   Video stream unavailable
                 </p>
-                <p className="mt-1 text-xs text-zinc-400">Retrying in 5 s…</p>
+                <p className="mt-1 text-xs text-zinc-200">Retrying in 5 s…</p>
                 <button
                   onClick={onRetry}
-                  className="mt-4 rounded-md bg-emerald-400 px-4 py-2 text-xs font-semibold text-zinc-950 transition hover:bg-emerald-300 shadow-md"
+                  className="mt-4 rounded-md bg-emerald-600 px-4 py-2 text-xs font-semibold text-zinc-100 transition hover:bg-emerald-700 shadow-md"
                 >
                   Retry now
                 </button>

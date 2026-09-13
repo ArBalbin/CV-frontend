@@ -4,8 +4,8 @@
 
 @layer base {
   :root {
-    color: #f4f4f5;
-    background: #181d24;
+    color: #18181b;
+    background: #fafafa;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
@@ -14,13 +14,13 @@
 
   html {
     min-height: 100%;
-    background: #181d24;
+    background: #fafafa;
   }
 
   body {
     min-height: 100vh;
     margin: 0;
-    background: #181d24;
+    background: #fafafa;
     font-family: "IBM Plex Sans", system-ui, sans-serif;
   }
 
@@ -41,7 +41,7 @@
   }
 
   ::selection {
-    background: #0e7c86;
+    background: #059669;
     color: #ffffff;
   }
 }
@@ -49,11 +49,11 @@
 @layer components {
   /* ---------- shell / chrome ---------- */
   .app-shell {
-    @apply min-h-screen bg-paper text-ink;
+    @apply min-h-screen bg-zinc-50 text-zinc-900;
   }
 
   .sidebar {
-    @apply fixed inset-y-0 left-0 z-30 hidden w-60 bg-[#212833] text-zinc-100 lg:block border-r border-zinc-700 shadow-2xl;
+    @apply fixed inset-y-0 left-0 z-30 hidden w-60 bg-emerald-700 text-zinc-900 lg:block border-r border-zinc-200 shadow-sm;
   }
 
   .sidebar-inner {
@@ -61,19 +61,19 @@
   }
 
   .brand {
-    @apply flex items-center gap-3 border-b border-zinc-700 px-6 py-6;
+    @apply flex items-center gap-3 border-b border-zinc-200 px-6 py-6;
   }
 
   .brand-mark {
-    @apply flex h-10 w-10 items-center justify-center bg-emerald-400 text-zinc-950 font-bold shadow-md;
+    @apply flex h-10 w-10 items-center justify-center bg-emerald-600 text-white font-bold shadow-sm;
   }
 
   .brand-name {
-    @apply text-sm font-semibold tracking-tight text-zinc-100;
+    @apply text-sm font-semibold tracking-tight text-zinc-900;
   }
 
   .brand-meta {
-    @apply text-xs text-zinc-400;
+    @apply text-xs text-zinc-500;
   }
 
   .sidebar-section {
@@ -81,7 +81,7 @@
   }
 
   .sidebar-label {
-    @apply mb-2 px-2 text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-400;
+    @apply mb-2 px-2 text-[10px] font-medium uppercase tracking-[0.14em] text-zinc-200;
   }
 
   .sidebar-nav {
@@ -89,20 +89,20 @@
   }
 
   .nav-item {
-    @apply relative flex w-full items-center gap-3 px-3 py-2.5 text-left text-[13px] font-medium text-zinc-300 transition rounded-sm;
+    @apply relative flex w-full items-center gap-3 px-3 py-2.5 text-left text-[13px] font-medium text-zinc-100 transition rounded-sm;
   }
 
   .nav-item:hover {
-    @apply bg-zinc-700/80 text-zinc-100 shadow-sm;
+    @apply bg-zinc-100 text-zinc-900;
   }
 
   .nav-item.active {
-    @apply bg-zinc-700 text-zinc-100 shadow-md;
+    @apply bg-zinc-200 text-black;
   }
 
   .nav-item.active::before {
     content: "";
-    @apply absolute left-0 top-1/2 h-5 w-[2.5px] -translate-y-1/2 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)];
+    @apply absolute left-0 top-1/2 h-5 w-[2.5px] -translate-y-1/2 bg-emerald-600;
   }
 
   .sidebar-bottom {
@@ -110,11 +110,11 @@
   }
 
   .account-button {
-    @apply mb-3 flex w-full items-center gap-3 bg-[#283140] border border-zinc-600/80 p-3 text-left transition hover:bg-zinc-700/90 rounded-md shadow-sm;
+    @apply mb-3 flex w-full items-center gap-3 bg-zinc-50 border border-zinc-200 p-3 text-left transition hover:bg-zinc-100 rounded-md;
   }
 
   .account-avatar {
-    @apply flex rounded-full h-9 w-9 shrink-0 items-center justify-center bg-zinc-700 text-zinc-200 shadow-inner;
+    @apply flex rounded-full h-9 w-9 shrink-0 items-center justify-center bg-zinc-100 text-zinc-600;
   }
 
   .account-copy {
@@ -126,19 +126,19 @@
   }
 
   .account-role {
-    @apply mt-0.5 block text-xs text-zinc-400;
+    @apply mt-0.5 block text-xs text-zinc-200;
   }
 
   .logout-button {
-    @apply flex w-full items-center justify-center gap-2 border border-zinc-600/80 bg-[#283140] px-3 py-2 text-[13px] font-medium text-zinc-200 transition hover:bg-zinc-700 hover:text-zinc-100 rounded-md shadow-sm;
+    @apply flex w-full items-center justify-center gap-2 border border-zinc-200 bg-zinc-50 px-3 py-2 text-[13px] font-medium text-zinc-200 transition hover:bg-zinc-100 hover:text-zinc-900 rounded-md;
   }
 
   .main-shell {
-    @apply min-h-screen lg:pl-60 bg-[#181d24] text-zinc-100;
+    @apply min-h-screen lg:pl-60 bg-zinc-200/80 text-zinc-900;
   }
 
   .topbar {
-    @apply sticky top-0 z-20 border-b border-zinc-600 bg-[#212833] backdrop-blur shadow-sm;
+    @apply sticky top-0 z-20 border-b border-zinc-200 bg-white/95 backdrop-blur shadow-sm;
   }
 
   .topbar-inner {
@@ -146,15 +146,15 @@
   }
 
   .eyebrow-chip {
-    @apply mb-2 inline-flex items-center gap-2 border border-zinc-600 bg-[#283140] px-3 py-1 text-xs font-semibold uppercase tracking-wide text-zinc-200 shadow-sm;
+    @apply mb-2 inline-flex items-center gap-2 border border-zinc-200 bg-zinc-50 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-zinc-600;
   }
 
   .page-heading h1 {
-    @apply text-2xl uppercase font-mono font-semibold tracking-[-0.02em] text-zinc-100 md:text-3xl;
+    @apply text-2xl uppercase font-mono font-semibold tracking-[-0.02em] text-zinc-900 md:text-3xl;
   }
 
   .page-heading p {
-    @apply mt-1 text-sm text-zinc-400;
+    @apply mt-1 text-sm text-zinc-500;
   }
 
   .topbar-actions {
@@ -166,11 +166,11 @@
   }
 
   .mobile-nav-item {
-    @apply inline-flex shrink-0 items-center gap-2 border border-zinc-600 bg-[#283140] px-3 py-2 text-[12px] font-medium text-zinc-200 transition shadow-sm;
+    @apply inline-flex shrink-0 items-center gap-2 border border-zinc-200 bg-zinc-50 px-3 py-2 text-[12px] font-medium text-zinc-600 transition;
   }
 
   .mobile-nav-item.active {
-    @apply border-zinc-400 bg-zinc-700 text-zinc-100 shadow-md;
+    @apply border-emerald-300 bg-emerald-50 text-emerald-800;
   }
 
   .page-content {
@@ -179,31 +179,31 @@
 
   /* ---------- surfaces / cards ---------- */
   .surface {
-    @apply border border-zinc-600/80 bg-[#212833] shadow-lg shadow-black/25;
+    @apply border border-zinc-200 bg-white shadow-sm;
   }
 
   .metric {
-    @apply flex min-h-[128px] flex-col justify-between border border-zinc-600/80 bg-[#212833] p-5 shadow-lg shadow-black/25 transition hover:border-zinc-500 hover:shadow-xl;
+    @apply flex min-h-[128px] flex-col justify-between border border-zinc-200 bg-white p-5 shadow-sm transition hover:border-zinc-300;
   }
 
   .metric-icon {
-    @apply flex h-9 w-9 items-center justify-center text-zinc-200 bg-zinc-700/50 rounded;
+    @apply flex h-9 w-9 items-center justify-center text-zinc-600 bg-zinc-100 rounded;
   }
 
   .metric-label {
-    @apply text-[10px] font-medium uppercase tracking-[0.12em] text-zinc-400;
+    @apply text-[10px] font-medium uppercase tracking-[0.12em] text-zinc-500;
   }
 
   .metric-value {
-    @apply mt-3 font-mono text-[26px] font-semibold leading-none tracking-[-0.03em] text-white;
+    @apply mt-3 font-mono text-[26px] font-semibold leading-none tracking-[-0.03em] text-zinc-900;
   }
 
   .metric-detail {
-    @apply mt-2 text-[12px] text-zinc-300;
+    @apply mt-2 text-[12px] text-zinc-500;
   }
 
   .status-badge {
-    @apply inline-flex items-center gap-2 border border-zinc-600 bg-[#283140] px-2.5 py-1.5 text-[11px] font-medium text-zinc-200 shadow-sm;
+    @apply inline-flex items-center gap-2 border border-zinc-200 bg-zinc-50 px-2.5 py-1.5 text-[11px] font-medium text-zinc-700;
   }
 
   .status-dot {
@@ -211,58 +211,79 @@
   }
 
   .empty-state {
-    @apply flex min-h-40 flex-col items-center justify-center border border-dashed border-zinc-600 bg-[#212833]/60 px-6 py-8 text-center shadow-inner;
+    @apply flex min-h-40 flex-col items-center justify-center border border-dashed border-zinc-200 bg-zinc-50/60 px-6 py-8 text-center;
   }
 
   .empty-icon {
-    @apply flex h-9 w-9 items-center justify-center bg-zinc-700 text-zinc-200;
+    @apply flex h-9 w-9 items-center justify-center bg-zinc-100 text-zinc-500;
   }
 
   .progress-track {
-    @apply h-2 w-full overflow-hidden bg-zinc-700 rounded-full;
+    @apply h-2 w-full overflow-hidden bg-zinc-100 rounded-full;
   }
 
   .progress-value {
-    @apply h-full transition-all duration-300 bg-emerald-400 rounded-full;
+    @apply h-full transition-all duration-300 bg-emerald-600 rounded-full;
   }
 
   /* ---------- form controls ---------- */
   .btn-primary {
-    @apply inline-flex items-center justify-center gap-2 bg-emerald-400 px-4 py-2.5 text-sm font-semibold text-zinc-950 transition hover:bg-emerald-300 focus:outline-none focus:ring-2 focus:ring-emerald-400 shadow-md;
+    @apply inline-flex items-center justify-center gap-2 bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-600/30 shadow-sm;
   }
 
   .btn-secondary {
-    @apply inline-flex items-center justify-center gap-2 border border-zinc-500 bg-[#283140] px-4 py-2.5 text-sm font-medium text-zinc-100 transition hover:border-zinc-400 hover:bg-zinc-700 focus:outline-none focus:ring-2 focus:ring-zinc-400 shadow-sm;
+    @apply inline-flex items-center justify-center gap-2 border border-zinc-200 bg-white px-4 py-2.5 text-sm font-medium text-zinc-700 transition hover:border-zinc-300 hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-200 shadow-sm;
   }
 
   .btn-danger {
-    @apply inline-flex items-center justify-center gap-2 border border-red-700/80 bg-red-600 px-4 py-2.5 text-sm font-medium text-red-100 transition hover:bg-red-900/60 focus:outline-none focus:ring-2 focus:ring-red-500/30 shadow-sm;
+    @apply inline-flex items-center justify-center gap-2 border border-red-100 bg-red-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-red-400 focus:outline-none focus:ring-2 focus:ring-red-200 shadow-sm;
   }
 
   .field {
-    @apply w-full border border-zinc-500 bg-[#212833] px-3 py-2.5 text-sm text-zinc-100 outline-none transition placeholder:text-zinc-400 focus:border-emerald-400 focus:ring-2 focus:ring-emerald-400/20 shadow-inner;
+    @apply w-full border border-zinc-300 bg-white px-3 py-2.5 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-emerald-600 focus:ring-2 focus:ring-emerald-600/20;
   }
 }
 
+/* ---------- scrollbar ---------- */
 ::-webkit-scrollbar {
-  height: 8px;
-  width: 8px;
+  height: 10px;
+  width: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #181d24;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #4b5563;
+  background: #a7f3d0;
+  border: 2px solid #fafafa;
   border-radius: 999px;
+  background-clip: padding-box;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #6b7280;
+  background: #059669;
+  border-color: #fafafa;
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: #4b5563 #181d24;
+  scrollbar-color: #a7f3d0 transparent;
+}
+
+.sidebar ::-webkit-scrollbar-thumb {
+  background: #6ee7b7;
+  border: 2px solid #047857;
+}
+
+.sidebar ::-webkit-scrollbar-thumb:hover {
+  background: #d1fae5;
+}
+
+.sidebar {
+  scrollbar-color: #6ee7b7 #047857;
 }

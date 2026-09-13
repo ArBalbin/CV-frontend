@@ -162,14 +162,14 @@ export default function QueueAnalytics() {
       }
     >
       {lastError && (
-        <div className="mb-5 flex items-center justify-between gap-4 rounded-sm border border-red-500/40 bg-red-950/60 px-4 py-3 text-sm text-red-200 shadow-lg backdrop-blur">
+        <div className="mb-5 flex items-center justify-between gap-4 rounded-sm border border-red-700 bg-red-600 px-4 py-3 text-sm text-red-100 shadow-sm">
           <div className="flex items-center gap-2">
             <AlertTriangle className="h-4 w-4" />
             {lastError}
           </div>
           <button
             onClick={() => setLastError("")}
-            className="font-semibold text-brick-signal"
+            className="rounded bg-white px-2.5 py-1 text-xs font-semibold text-red-700 transition hover:bg-red-100 border border-red-200"
           >
             Dismiss
           </button>
@@ -178,7 +178,7 @@ export default function QueueAnalytics() {
 
       <div className="space-y-6">
         <div>
-          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
             Metrics Overview
           </h2>
           <MetricsOverview
@@ -189,7 +189,7 @@ export default function QueueAnalytics() {
         </div>
 
         <div>
-          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
             Forecast Summary & Queue Estimates
           </h2>
           <SummaryRow
@@ -204,7 +204,7 @@ export default function QueueAnalytics() {
         </div>
 
         <div>
-          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
             Performance Trends & History
           </h2>
           <TrendCharts

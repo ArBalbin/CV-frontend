@@ -15,18 +15,18 @@ interface MetricCardProps {
 }
 
 const iconToneClasses: Record<string, string> = {
-  blue: "text-blue-400",
-  teal: "text-teal-400",
-  amber: "text-amber-400",
-  red: "text-red-400",
-  slate: "text-zinc-400",
-  green: "text-emerald-400",
+  blue: "text-blue-600",
+  teal: "text-teal-600",
+  amber: "text-amber-600",
+  red: "text-red-600",
+  slate: "text-zinc-500",
+  green: "text-emerald-600",
 };
 
 export function Panel({ children, className = "" }: PanelProps) {
   return (
     <div
-      className={`rounded-sm border border-zinc-600/80 bg-[#212833] p-5 shadow-lg shadow-black/25 transition hover:border-zinc-500 text-zinc-100 ${className}`}
+      className={`rounded-sm border border-zinc-200 bg-white p-5 shadow-sm transition hover:border-zinc-300 text-zinc-900 ${className}`}
     >
       {children}
     </div>
@@ -41,21 +41,21 @@ export function MetricCard({
   tone = "blue",
 }: MetricCardProps) {
   return (
-    <div className="flex flex-col justify-between bg-[#212833] p-4 shadow-sm transition hover:bg-[#283140]/40">
+    <div className="flex flex-col justify-between bg-white p-4 shadow-sm transition hover:bg-zinc-50">
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+        <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
           {label}
         </span>
         <Icon className={`h-4 w-4 flex-shrink-0 ${iconToneClasses[tone]}`} />
       </div>
       <div className="my-3">
-        <span className="font-mono text-xl sm:text-2xl font-semibold text-zinc-100 tabular-nums">
+        <span className="font-mono text-xl sm:text-2xl font-semibold text-zinc-900 tabular-nums">
           {value}
         </span>
       </div>
       {detail && (
         <div>
-          <span className="text-xs text-zinc-400 truncate">{detail}</span>
+          <span className="text-xs text-zinc-500 truncate">{detail}</span>
         </div>
       )}
     </div>
@@ -70,19 +70,19 @@ export function StatusBadge({
   tone?: "green" | "amber" | "red" | "blue" | "slate";
 }) {
   const dotClasses: Record<string, string> = {
-    green: "bg-emerald-400",
-    amber: "bg-amber-400",
-    red: "bg-red-400",
-    blue: "bg-blue-400",
+    green: "bg-emerald-600",
+    amber: "bg-amber-600",
+    red: "bg-red-600",
+    blue: "bg-blue-600",
     slate: "bg-zinc-400",
   };
 
   const badgeClasses: Record<string, string> = {
-    green: "border-emerald-500/40 bg-emerald-950/30 text-emerald-300",
-    amber: "border-amber-500/40 bg-amber-950/30 text-amber-300",
-    red: "border-red-500/40 bg-red-950/30 text-red-300",
-    blue: "border-blue-500/40 bg-blue-950/30 text-blue-300",
-    slate: "border-zinc-600/60 bg-[#283140] text-zinc-300",
+    green: "border-emerald-200 bg-emerald-50 text-emerald-700",
+    amber: "border-amber-200 bg-amber-50 text-amber-700",
+    red: "border-red-200 bg-red-50 text-red-700",
+    blue: "border-blue-200 bg-blue-50 text-blue-700",
+    slate: "border-zinc-200 bg-zinc-50 text-zinc-600",
   };
 
   return (
@@ -105,13 +105,13 @@ export function EmptyState({
   detail?: string;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center rounded-md border border-zinc-600/60 bg-[#283140] p-8 text-center shadow-sm">
-      <div className="rounded-md border border-zinc-600/60 bg-[#212833] p-3 text-zinc-400 shadow-sm">
+    <div className="flex flex-col items-center justify-center rounded-md border border-dashed border-zinc-200 bg-zinc-50 p-8 text-center">
+      <div className="rounded-md border border-zinc-200 bg-white p-3 text-zinc-500 shadow-sm">
         <Icon className="h-5 w-5" />
       </div>
-      <p className="mt-3 text-sm font-semibold text-zinc-100">{title}</p>
+      <p className="mt-3 text-sm font-semibold text-zinc-900">{title}</p>
       {detail && (
-        <p className="mt-1 max-w-sm text-xs text-zinc-400">{detail}</p>
+        <p className="mt-1 max-w-sm text-xs text-zinc-500">{detail}</p>
       )}
     </div>
   );
@@ -126,14 +126,14 @@ export function ProgressBar({
 }) {
   const safeValue = Math.max(0, Math.min(100, value));
   const classes: Record<string, string> = {
-    blue: "bg-blue-500",
-    green: "bg-emerald-500",
-    amber: "bg-amber-500",
-    red: "bg-red-500",
+    blue: "bg-blue-600",
+    green: "bg-emerald-600",
+    amber: "bg-amber-600",
+    red: "bg-red-600",
   };
 
   return (
-    <div className="h-2 w-full overflow-hidden rounded-full border border-zinc-600/60 bg-[#212833] p-0.5 shadow-inner">
+    <div className="h-2 w-full overflow-hidden rounded-full border border-zinc-200 bg-zinc-100 p-0.5">
       <div
         className={`h-full rounded-full transition-all duration-300 ${classes[tone]}`}
         style={{ width: `${safeValue}%` }}

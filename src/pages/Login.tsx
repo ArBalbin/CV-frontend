@@ -6,7 +6,7 @@ import { apiClient } from "../config/api";
 import { HealthStatus } from "../types/api";
 import { LoginForm } from "../components/login/LoginForm";
 import { RegisterForm } from "../components/login/RegisterForm";
-import Logo from "../assets/img/Logo.png";
+import Logo from "../assets/img/GreenLogo.png";
 
 export default function Login() {
   const [mode, setMode] = useState<"login" | "register">("login");
@@ -93,41 +93,41 @@ export default function Login() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <main className="min-h-screen bg-gradient-to-br from-[#0f1117] via-[#15181d] to-[#1a1e26] flex flex-col items-center justify-between">
+    <main className="min-h-screen bg-gradient-to-br from-white via-zinc-50 to-emerald-50/40 flex flex-col items-center justify-between">
       <div className="w-full max-w-md my-auto">
         <div className="mb-10 flex items-center justify-center flex-col">
           <img src={Logo} className="w-auto h-28" alt="QueueFlow Logo" />
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-2 text-sm text-zinc-500">
             Queue management operations
           </p>
         </div>
 
-        <div className="rounded-md border border-slate-700/80 bg-[#1a1e26] p-8 shadow-2xl backdrop-blur-sm">
-          <div className="mb-6 w-28 flex items-center justify-between rounded-lg border border-slate-700 bg-slate-800/50 px-3 py-2">
+        <div className="rounded-md border border-zinc-200 bg-white p-8 shadow-xl shadow-zinc-200/50">
+          <div className="mb-6 w-28 flex items-center justify-between rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2">
             <div className="flex items-center gap-2">
               <div
-                className={`h-2 w-2 rounded-full ${health ? "bg-emerald-500" : healthLoading ? "bg-slate-500" : "bg-red-500"}`}
+                className={`h-2 w-2 rounded-full ${health ? "bg-emerald-500" : healthLoading ? "bg-zinc-400" : "bg-red-500"}`}
               />
-              <span className="text-xs font-medium text-slate-300">
+              <span className="text-xs font-medium text-zinc-600">
                 {apiLabel}
               </span>
             </div>
             {health && (
-              <CheckCircle2 className="h-4 w-4 text-emerald-500 flex-shrink-0" />
+              <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
             )}
           </div>
 
           {error && (
-            <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3">
-              <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-400" />
-              <span className="text-sm text-red-300">{error}</span>
+            <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+              <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-500" />
+              <span className="text-sm text-red-700">{error}</span>
             </div>
           )}
 
           {success && (
-            <div className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-4 py-3">
-              <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-400" />
-              <span className="text-sm text-emerald-300">{success}</span>
+            <div className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
+              <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-600" />
+              <span className="text-sm text-emerald-700">{success}</span>
             </div>
           )}
 
@@ -163,7 +163,7 @@ export default function Login() {
         </div>
       </div>
 
-      <footer className="mt-8 text-center border-t w-full text-xs py-4 border-zinc-600 text-slate-500 space-y-1">
+      <footer className="mt-8 text-center border-t w-full bg-emerald-700 text-xs py-4 border-zinc-400 text-zinc-100 space-y-1">
         <p>&copy; {currentYear} QueueEx. All rights reserved.</p>
       </footer>
     </main>

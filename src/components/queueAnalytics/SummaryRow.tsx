@@ -33,13 +33,13 @@ export default function SummaryRow({
 }: SummaryRowProps) {
   return (
     <div className="mt-5 grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1.5fr)_minmax(420px,0.9fr)]">
-      <Panel className="border-zinc-600/80 bg-[#212833] p-5 shadow-lg shadow-black/25">
+      <Panel className="border-zinc-200/80 bg-white p-5 shadow-sm">
         <div className="mb-5 flex items-center justify-between">
           <div>
-            <h2 className="text-base font-semibold text-zinc-100">
+            <h2 className="text-base font-semibold text-zinc-900">
               Forecast Summary
             </h2>
-            <p className="mt-1 text-sm text-zinc-400">
+            <p className="mt-1 text-sm text-zinc-500">
               Data age:{" "}
               {analytics
                 ? `${analytics.overview.data_age_seconds}s`
@@ -54,30 +54,30 @@ export default function SummaryRow({
           />
         </div>
 
-        <div className="h-px bg-zinc-500 mb-4 -mx-5" />
+        <div className="h-px bg-zinc-300 mb-4 -mx-5" />
 
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {forecastRows.map((item) => (
             <div
               key={item.label}
-              className="rounded border border-zinc-600/60 bg-[#181d24] p-4"
+              className="rounded border border-zinc-200/60 bg-zinc-50 p-4"
             >
-              <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
+              <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
                 {item.label}
               </p>
-              <p className="mt-3 text-2xl font-semibold text-zinc-100 font-mono">
+              <p className="mt-3 text-2xl font-semibold text-zinc-900 font-mono">
                 {item.value}
               </p>
             </div>
           ))}
         </div>
         <div className="mt-5 grid gap-4 md:grid-cols-2">
-          <div className="rounded border border-zinc-600/60 bg-[#181d24] p-4">
+          <div className="rounded border border-zinc-200/60 bg-zinc-50 p-4">
             <div className="mb-3 flex items-center justify-between text-sm">
-              <span className="font-semibold text-zinc-300">
+              <span className="font-semibold text-zinc-600">
                 System utilization
               </span>
-              <span className="font-semibold text-zinc-100 font-mono">
+              <span className="font-semibold text-zinc-900 font-mono">
                 {numberLabel(utilizationPercent, 1)}%
               </span>
             </div>
@@ -86,12 +86,12 @@ export default function SummaryRow({
               tone={utilizationTone(utilization)}
             />
           </div>
-          <div className="rounded border border-zinc-600/60 bg-[#181d24] p-4">
+          <div className="rounded border border-zinc-200/60 bg-zinc-50 p-4">
             <div className="mb-3 flex items-center justify-between text-sm">
-              <span className="font-semibold text-zinc-300">
+              <span className="font-semibold text-zinc-600">
                 Completion share
               </span>
-              <span className="font-semibold text-zinc-100 font-mono">
+              <span className="font-semibold text-zinc-900 font-mono">
                 {numberLabel(completionRate, 1)}%
               </span>
             </div>
@@ -100,31 +100,31 @@ export default function SummaryRow({
         </div>
       </Panel>
 
-      <Panel className="border-zinc-600/80 bg-[#212833] p-5 shadow-lg shadow-black/25">
+      <Panel className="border-zinc-200/80 bg-white p-5 shadow-sm">
         <div className="mb-4 flex items-center gap-2">
-          <BarChart3 className="h-5 w-5 text-emerald-400" />
-          <h2 className="text-base font-semibold text-zinc-100">
+          <BarChart3 className="h-5 w-5 text-emerald-600" />
+          <h2 className="text-base font-semibold text-zinc-900">
             Current Queue Estimates
           </h2>
         </div>
-        <div className="h-px bg-zinc-500 mb-4 -mx-5" />
+        <div className="h-px bg-zinc-300 mb-4 -mx-5" />
 
         {analytics?.active_queue.length ? (
           <div className="space-y-2">
             {analytics.active_queue.slice(0, 8).map((person) => (
               <div
                 key={person.queue_number}
-                className="flex items-center justify-between rounded border border-zinc-600/60 bg-[#181d24] px-3 py-2 text-sm"
+                className="flex items-center justify-between rounded border border-zinc-200/60 bg-zinc-50 px-3 py-2 text-sm"
               >
                 <div>
-                  <p className="font-semibold text-zinc-100">
+                  <p className="font-semibold text-zinc-900">
                     {person.queue_label}
                   </p>
-                  <p className="text-xs text-zinc-400">
+                  <p className="text-xs text-zinc-500">
                     Position {person.position}
                   </p>
                 </div>
-                <span className="font-semibold text-zinc-300 font-mono">
+                <span className="font-semibold text-zinc-600 font-mono">
                   {person.estimated_wait_time_label}
                 </span>
               </div>

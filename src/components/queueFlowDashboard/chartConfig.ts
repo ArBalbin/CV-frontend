@@ -7,8 +7,8 @@ export function buildQueueChartData(samples: QueueChartSample[]) {
       {
         label: "Queue length",
         data: samples.map((sample) => sample.queue),
-        borderColor: "#0E7C86",
-        backgroundColor: "rgba(14, 124, 134, 0.12)",
+        borderColor: "#059669",
+        backgroundColor: "rgba(5, 150, 105, 0.12)",
         borderWidth: 2,
         fill: true,
         tension: 0.35,
@@ -70,8 +70,8 @@ export function buildPeopleChartData(samples: PeopleChartSample[]) {
       {
         label: "People detected",
         data: samples.map((sample) => sample.count),
-        borderColor: "#0E7C86",
-        backgroundColor: "rgba(14, 124, 134, 0.12)",
+        borderColor: "#059669",
+        backgroundColor: "rgba(5, 150, 105, 0.12)",
         borderWidth: 2,
         fill: true,
         tension: 0.35,

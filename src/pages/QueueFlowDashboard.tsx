@@ -88,9 +88,9 @@ export default function QueueFlowDashboard() {
   const [peopleSamples, setPeopleSamples] = useState<PeopleChartSample[]>([]);
   const [showDetection, setShowDetection] = useState(false);
 
-  const [activeTab, setActiveTab] = useState<
-    "live" | "analytics" | "controls"
-  >("live");
+  const [activeTab, setActiveTab] = useState<"live" | "analytics" | "controls">(
+    "live",
+  );
 
   useEffect(() => {
     if (!streamError) return;
@@ -407,13 +407,13 @@ export default function QueueFlowDashboard() {
       <OnWayNotifications notifications={queueState.on_way_notifications} />
 
       {/* Streamlined Navigation Tabs */}
-      <div className="my-5 flex items-center gap-2 border-b border-zinc-700/80 pb-3">
+      <div className="my-5 flex items-center gap-2 border-b border-zinc-400/80 pb-3">
         <button
           onClick={() => setActiveTab("live")}
           className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-md transition ${
             activeTab === "live"
-              ? "bg-emerald-400 text-zinc-950 shadow-md"
-              : "bg-[#212833] text-zinc-300 border border-zinc-600/80 hover:bg-zinc-700 hover:text-zinc-100"
+              ? "bg-emerald-600 text-zinc-100 shadow-md"
+              : "bg-white text-zinc-600 border border-zinc-200/80 hover:bg-zinc-100 hover:text-zinc-900"
           }`}
         >
           <Activity className="h-4 w-4" />
@@ -423,8 +423,8 @@ export default function QueueFlowDashboard() {
           onClick={() => setActiveTab("analytics")}
           className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-md transition ${
             activeTab === "analytics"
-              ? "bg-emerald-400 text-zinc-950 shadow-md"
-              : "bg-[#212833] text-zinc-300 border border-zinc-600/80 hover:bg-zinc-700 hover:text-zinc-100"
+              ? "bg-emerald-600 text-zinc-100 shadow-md"
+              : "bg-white text-zinc-600 border border-zinc-200/80 hover:bg-zinc-100 hover:text-zinc-900"
           }`}
         >
           <BarChart3 className="h-4 w-4" />
@@ -434,8 +434,8 @@ export default function QueueFlowDashboard() {
           onClick={() => setActiveTab("controls")}
           className={`inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold uppercase tracking-wider rounded-md transition ${
             activeTab === "controls"
-              ? "bg-emerald-400 text-zinc-950 shadow-md"
-              : "bg-[#212833] text-zinc-300 border border-zinc-600/80 hover:bg-zinc-700 hover:text-zinc-100"
+              ? "bg-emerald-600 text-zinc-100 shadow-md"
+              : "bg-white text-zinc-600 border border-zinc-200/80 hover:bg-zinc-100 hover:text-zinc-900"
           }`}
         >
           <Sliders className="h-4 w-4" />
@@ -447,7 +447,7 @@ export default function QueueFlowDashboard() {
       {activeTab === "live" && (
         <div className="space-y-6 animate-fadeIn">
           <div>
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
               System Metrics Overview
             </h2>
             <MetricsOverview
@@ -459,7 +459,7 @@ export default function QueueFlowDashboard() {
             />
           </div>
           <div>
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
               Live Feed & Queue Tracking
             </h2>
             <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1.45fr)_minmax(420px,0.9fr)]">
@@ -492,19 +492,17 @@ export default function QueueFlowDashboard() {
       {activeTab === "analytics" && (
         <div className="space-y-6 animate-fadeIn">
           <div>
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
               Wait Time Forecasts
             </h2>
-            <ForecastPanel
-              data={data}
-              prediction={prediction}
-              forecastCards={forecastCards}
-              utilization={utilization}
-              utilizationPercent={utilizationPercent}
+
+            <QueueTrendPanel
+              chartData={chartData}
+              onClear={() => setChartSamples([])}
             />
           </div>
           <div>
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
               Detection Analysis
             </h2>
             <DetectionPanel
@@ -516,13 +514,16 @@ export default function QueueFlowDashboard() {
             />
           </div>
           <div>
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
               Queue Trends & System Status
             </h2>
             <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(420px,0.9fr)]">
-              <QueueTrendPanel
-                chartData={chartData}
-                onClear={() => setChartSamples([])}
+              <ForecastPanel
+                data={data}
+                prediction={prediction}
+                forecastCards={forecastCards}
+                utilization={utilization}
+                utilizationPercent={utilizationPercent}
               />
               <BackendStatusPanel health={health} zone={zone} />
             </div>
@@ -533,7 +534,7 @@ export default function QueueFlowDashboard() {
       {activeTab === "controls" && (
         <div className="space-y-6 animate-fadeIn">
           <div>
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
               Service Management & Exceptions
             </h2>
             <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1.4fr)_minmax(420px,0.9fr)]">
@@ -562,7 +563,7 @@ export default function QueueFlowDashboard() {
             </div>
           </div>
           <div>
-            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
               Backend Health
             </h2>
             <div className="grid grid-cols-1 gap-5">

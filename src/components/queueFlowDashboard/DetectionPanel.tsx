@@ -30,37 +30,37 @@ export default function DetectionPanel({
   onClearPeopleSamples,
 }: DetectionPanelProps) {
   return (
-    <Panel className="p-5 border border-zinc-600/80 bg-[#212833] shadow-lg shadow-black/25 rounded-sm">
+    <Panel className="p-5 border border-zinc-200/80 bg-white shadow-sm rounded-sm">
       <button
         onClick={onToggle}
         className="flex w-full items-center justify-between gap-3 text-left focus:outline-none"
       >
         <div className="flex items-center gap-3">
-          <div className="rounded-md bg-zinc-700/60 p-2.5 text-emerald-400 shadow-inner">
+          <div className="rounded-md bg-zinc-100/60 p-2.5 text-emerald-600 shadow-inner">
             <Eye className="h-5 w-5" />
           </div>
           <div>
-            <h2 className="text-base font-semibold text-zinc-100">
+            <h2 className="text-base font-semibold text-zinc-900">
               Camera &amp; Detection
             </h2>
-            <p className="text-xs text-zinc-400 mt-0.5">
+            <p className="text-xs text-zinc-500 mt-0.5">
               People detection, density, and camera health — usually only needed
               when troubleshooting.
             </p>
           </div>
         </div>
-        <span className="inline-flex items-center gap-1.5 rounded border border-zinc-600/80 bg-[#283140] px-3 py-1.5 text-xs font-semibold text-zinc-200 shadow-sm transition hover:bg-zinc-700">
+        <span className="inline-flex items-center gap-1.5 rounded border border-zinc-200/80 bg-zinc-100 px-3 py-1.5 text-xs font-semibold text-zinc-800 shadow-sm transition hover:bg-zinc-100">
           {show ? "Hide" : "Show"}
           {show ? (
-            <ChevronUp className="h-4 w-4 text-emerald-400" />
+            <ChevronUp className="h-4 w-4 text-emerald-600" />
           ) : (
-            <ChevronDown className="h-4 w-4 text-emerald-400" />
+            <ChevronDown className="h-4 w-4 text-emerald-600" />
           )}
         </span>
       </button>
 
       {show && (
-        <div className="mt-5 border-t border-zinc-700/80 pt-5 space-y-5">
+        <div className="mt-5 border-t border-zinc-100/80 pt-5 space-y-5">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <MetricCard
               icon={Users}
@@ -85,16 +85,16 @@ export default function DetectionPanel({
             />
           </div>
 
-          <div className="rounded-sm border border-zinc-700/80 bg-[#181d24] p-4">
+          <div className="rounded-sm border border-zinc-100/80 bg-zinc-50 p-4">
             <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-              <h3 className="text-sm font-semibold text-zinc-200">
+              <h3 className="text-sm font-semibold text-zinc-800">
                 People count trend
               </h3>
               <button
                 onClick={onClearPeopleSamples}
-                className="inline-flex items-center gap-2 border border-zinc-500 bg-[#283140] px-3 py-1.5 text-xs font-medium text-zinc-100 transition hover:bg-zinc-700 rounded-md shadow-sm"
+                className="inline-flex items-center gap-2 border border-zinc-300 bg-zinc-100 px-3 py-1.5 text-xs font-medium text-zinc-900 transition hover:bg-zinc-100 rounded-md shadow-sm"
               >
-                <RotateCcw className="h-3.5 w-3.5 text-emerald-400" />
+                <RotateCcw className="h-3.5 w-3.5 text-emerald-600" />
                 Clear
               </button>
             </div>

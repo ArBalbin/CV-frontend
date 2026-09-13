@@ -107,7 +107,7 @@ export default function Profile() {
       }
     >
       {lastError && (
-        <div className="mb-5 flex items-center justify-between gap-4 rounded-sm border border-red-500/40 bg-red-950/60 px-4 py-3 text-sm text-red-200 shadow-lg backdrop-blur">
+        <div className="mb-5 flex items-center justify-between gap-4 rounded-sm border border-red-700 bg-red-600 px-4 py-3 text-sm text-red-100 shadow-sm">
           {lastError}
         </div>
       )}
@@ -123,7 +123,7 @@ export default function Profile() {
         />
 
         <div className="grid gap-5">
-          <div className="grid grid-cols-3 divide-x divide-zinc-600/60 rounded-sm border border-zinc-600/80 bg-[#212833] shadow-lg shadow-black/25 overflow-hidden mb-5">
+          <div className="grid grid-cols-3 divide-x divide-zinc-200/60 rounded-sm border border-zinc-200/80 bg-white shadow-sm overflow-hidden mb-5">
             <MetricCard
               icon={ShieldCheck}
               label="Auth status"
@@ -147,43 +147,43 @@ export default function Profile() {
             />
           </div>
 
-          <Panel className="border-zinc-600/80 bg-[#212833] p-5 shadow-lg shadow-black/25">
+          <Panel className="border-zinc-200/80 bg-white p-5 shadow-sm">
             <div className="mb-4 flex items-center gap-2">
-              <UserCircle className="h-5 w-5 text-emerald-400" />
-              <h2 className="text-base font-semibold text-zinc-100">
+              <UserCircle className="h-5 w-5 text-emerald-600" />
+              <h2 className="text-base font-semibold text-zinc-900">
                 Account Details
               </h2>
             </div>
             <div className="grid gap-3 md:grid-cols-2">
-              <div className="rounded border border-zinc-600/60 bg-[#181d24] p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
+              <div className="rounded border border-zinc-200/60 bg-zinc-50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
                   Current user endpoint
                 </p>
-                <p className="mt-2 text-sm font-semibold text-zinc-100 font-mono">
+                <p className="mt-2 text-sm font-semibold text-zinc-900 font-mono">
                   GET /api/auth/profile
                 </p>
               </div>
-              <div className="rounded border border-zinc-600/60 bg-[#181d24] p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
+              <div className="rounded border border-zinc-200/60 bg-zinc-50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
                   Last health check
                 </p>
-                <p className="mt-2 text-sm font-semibold text-zinc-100 font-mono">
+                <p className="mt-2 text-sm font-semibold text-zinc-900 font-mono">
                   {formatDateTime(health?.timestamp)}
                 </p>
               </div>
-              <div className="rounded border border-zinc-600/60 bg-[#181d24] p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
+              <div className="rounded border border-zinc-200/60 bg-zinc-50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
                   Backend status
                 </p>
-                <p className="mt-2 text-sm font-semibold text-zinc-100 font-mono">
+                <p className="mt-2 text-sm font-semibold text-zinc-900 font-mono">
                   {health?.status || "No response"}
                 </p>
               </div>
-              <div className="rounded border border-zinc-600/60 bg-[#181d24] p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
+              <div className="rounded border border-zinc-200/60 bg-zinc-50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
                   Frontend API base
                 </p>
-                <p className="mt-2 break-all text-sm font-semibold text-zinc-100 font-mono">
+                <p className="mt-2 break-all text-sm font-semibold text-zinc-900 font-mono">
                   {API_BASE_URL}
                 </p>
               </div>
@@ -193,10 +193,10 @@ export default function Profile() {
       </div>
 
       {profileFields.length > 0 && (
-        <Panel className="mt-5 border-zinc-600/80 bg-[#212833] p-5 shadow-lg shadow-black/25">
+        <Panel className="mt-5 border-zinc-200/80 bg-white p-5 shadow-sm">
           <div className="mb-4 flex items-center gap-2">
-            <UserCircle className="h-5 w-5 text-emerald-400" />
-            <h2 className="text-base font-semibold text-zinc-100">
+            <UserCircle className="h-5 w-5 text-emerald-600" />
+            <h2 className="text-base font-semibold text-zinc-900">
               Profile Fields From Backend
             </h2>
           </div>
@@ -204,12 +204,12 @@ export default function Profile() {
             {profileFields.map(([key, value]) => (
               <div
                 key={key}
-                className="rounded border border-zinc-600/60 bg-[#181d24] p-4"
+                className="rounded border border-zinc-200/60 bg-zinc-50 p-4"
               >
-                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
+                <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">
                   {key.replace(/_/g, " ")}
                 </p>
-                <p className="mt-2 break-words text-sm font-semibold text-zinc-100 font-mono">
+                <p className="mt-2 break-words text-sm font-semibold text-zinc-900 font-mono">
                   {value === null || value === undefined || value === ""
                     ? "No data"
                     : String(value)}
@@ -220,10 +220,10 @@ export default function Profile() {
         </Panel>
       )}
 
-      <Panel className="mt-5 border-zinc-600/80 bg-[#212833] p-5 shadow-lg shadow-black/25">
+      <Panel className="mt-5 border-zinc-200/80 bg-white p-5 shadow-sm">
         <div className="mb-4 flex items-center gap-2">
-          <Server className="h-5 w-5 text-zinc-300" />
-          <h2 className="text-base font-semibold text-zinc-100">
+          <Server className="h-5 w-5 text-zinc-600" />
+          <h2 className="text-base font-semibold text-zinc-900">
             Dashboard Access
           </h2>
         </div>
@@ -234,13 +234,13 @@ export default function Profile() {
               <button
                 key={item.path}
                 onClick={() => navigate(item.path)}
-                className="rounded border border-zinc-600/60 bg-[#181d24] p-4 text-left transition hover:border-emerald-500 hover:bg-[#283140]/40"
+                className="rounded border border-zinc-200/60 bg-zinc-50 p-4 text-left transition hover:border-emerald-200 hover:bg-zinc-100/40"
               >
-                <Icon className="h-5 w-5 text-emerald-400" />
-                <p className="mt-3 text-sm font-semibold text-zinc-100">
+                <Icon className="h-5 w-5 text-emerald-600" />
+                <p className="mt-3 text-sm font-semibold text-zinc-900">
                   {item.label}
                 </p>
-                <p className="mt-1 text-sm text-zinc-400">{item.detail}</p>
+                <p className="mt-1 text-sm text-zinc-500">{item.detail}</p>
               </button>
             );
           })}

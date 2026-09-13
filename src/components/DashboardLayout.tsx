@@ -91,16 +91,16 @@ export default function DashboardLayout({
               href="/queue-display"
               target="_blank"
               rel="noopener noreferrer"
-              className="mb-3 flex w-full items-center justify-between gap-2 border border-white/60 px-3 py-2 text-[13px] font-medium text-white transition hover:bg-white/10 hover:text-white"
+              className="mb-3 flex w-full items-center justify-between gap-2 border border-zinc-200 bg-zinc-300 px-3 py-2 text-[13px] font-medium text-zinc-900 transition hover:bg-zinc-100 hover:text-zinc-900"
             >
               <span className="inline-flex items-center gap-2">
                 <MonitorPlay className="h-4 w-4" />
                 Display Board
               </span>
-              <ExternalLink className="h-3.5 w-3.5 text-white" />
+              <ExternalLink className="h-3.5 w-3.5 text-zinc-900" />
             </a>
 
-            <div className="h-px bg-zinc-600 -mx-4 my-2" />
+            <div className="h-px bg-zinc-400 -mx-4 my-2" />
 
             <div className="flex items-center gap-2">
               <div className="account-avatar">
@@ -114,10 +114,10 @@ export default function DashboardLayout({
               </div>
             </div>
 
-            <div className="h-px bg-zinc-600 -mx-4 my-2" />
+            <div className="h-px bg-zinc-400 -mx-4 my-2" />
             <button
               onClick={() => setOpenLogout(true)}
-              className="flex items-center gap-4 p-2 hover:text-zinc-100  hover:bg-zinc-100/20 justify-start w-full"
+              className="flex items-center gap-4 p-2 text-zinc-100 hover:text-zinc-900 hover:bg-zinc-100/40 justify-start w-full"
             >
               <LogOut className="h-4 w-4" />
               Log out

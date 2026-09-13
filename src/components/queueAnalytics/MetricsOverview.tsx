@@ -27,22 +27,22 @@ interface MetricCellProps {
 
 function MetricCell({ icon: Icon, label, value, detail }: MetricCellProps) {
   return (
-    <div className="flex flex-col bg-[#212833] hover:bg-[#283140]/40 transition">
+    <div className="flex flex-col bg-white hover:bg-zinc-100/40 transition">
       <div className="p-4 flex flex-col justify-between flex-1">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-xs font-semibold uppercase tracking-wider text-zinc-400">
+          <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
             {label}
           </span>
-          <Icon className="h-4 w-4 text-emerald-400 flex-shrink-0" />
+          <Icon className="h-4 w-4 text-emerald-600 flex-shrink-0" />
         </div>
         <div className="my-3">
-          <span className="font-mono text-xl sm:text-2xl font-semibold text-zinc-100">
+          <span className="font-mono text-xl sm:text-2xl font-semibold text-zinc-900">
             {value}
           </span>
         </div>
       </div>
-      <div className="border-t border-zinc-600/60 px-4 py-2.5 bg-[#212833]/50">
-        <span className="text-xs text-zinc-400">{detail}</span>
+      <div className="border-t border-zinc-200/60 px-4 py-2.5 bg-white/50">
+        <span className="text-xs text-zinc-500">{detail}</span>
       </div>
     </div>
   );
@@ -54,7 +54,7 @@ export default function MetricsOverview({
   utilizationPercent,
 }: MetricsOverviewProps) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 2xl:grid-cols-6 divide-x divide-zinc-600/60 rounded-sm border border-zinc-600/80 bg-[#212833] shadow-lg shadow-black/25 overflow-hidden mb-5">
+    <div className="grid grid-cols-2 sm:grid-cols-4 2xl:grid-cols-6 divide-x divide-zinc-200/60 rounded-sm border border-zinc-200/80 bg-white shadow-sm overflow-hidden mb-5">
       <MetricCell
         icon={Users}
         label="Queue length"

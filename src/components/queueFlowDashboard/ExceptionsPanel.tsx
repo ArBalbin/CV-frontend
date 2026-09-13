@@ -21,12 +21,12 @@ export default function ExceptionsPanel({
   const hasCompleted = queueState.completed.length > 0;
 
   return (
-    <Panel className="p-5 border border-zinc-600/80 bg-[#212833] shadow-lg shadow-black/25 rounded-sm transition hover:border-zinc-500 text-zinc-100">
+    <Panel className="p-5 border border-zinc-200/80 bg-white shadow-sm rounded-sm transition hover:border-zinc-300 text-zinc-900">
       <div className="mb-4 flex items-center gap-2.5">
-        <ShieldAlert className="h-5 w-5 text-amber-400" />
-        <h2 className="text-base font-semibold text-zinc-100">Exceptions</h2>
+        <ShieldAlert className="h-5 w-5 text-amber-600" />
+        <h2 className="text-base font-semibold text-zinc-900">Exceptions</h2>
       </div>
-      <div className="h-px bg-zinc-500 mb-4 -mx-5"/>
+      <div className="h-px bg-zinc-300 mb-4 -mx-5"/>
 
 
       {!hasPending && !hasCompleted ? (
@@ -35,7 +35,7 @@ export default function ExceptionsPanel({
         <div className="space-y-4">
           {hasPending && (
             <div>
-              <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+              <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-zinc-500">
                 Pending link — present in zone, not yet linked
               </p>
               <div className="space-y-2.5">
@@ -46,21 +46,21 @@ export default function ExceptionsPanel({
                   return (
                     <div
                       key={person.track_id}
-                      className="rounded-md border border-amber-500/40 bg-[#283140] px-3.5 py-3 text-sm text-zinc-100 shadow-sm"
+                      className="rounded-md border border-amber-200/40 bg-zinc-100 px-3.5 py-3 text-sm text-zinc-900 shadow-sm"
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <span className="inline-flex items-center gap-2">
-                          <span className="font-semibold text-zinc-100">
+                          <span className="font-semibold text-zinc-900">
                             {person.has_face_embedding
                               ? "Face detected"
                               : "Waiting for face"}
                           </span>
-                          <span className="font-mono text-xs text-amber-400">
+                          <span className="font-mono text-xs text-amber-600">
                             camera #{person.track_id}
                           </span>
                         </span>
                         {alert && (
-                          <span className="font-mono text-xs text-amber-400">
+                          <span className="font-mono text-xs text-amber-600">
                             waiting {alert.seconds_waiting}s
                           </span>
                         )}
@@ -75,12 +75,12 @@ export default function ExceptionsPanel({
                             )
                           }
                           placeholder="Ticket #"
-                          className="w-24 rounded border border-zinc-600/60 bg-[#212833] px-2.5 py-1.5 text-sm text-zinc-100 placeholder:text-zinc-500 focus:outline-none focus:ring-1 focus:ring-amber-400"
+                          className="w-24 rounded border border-zinc-200/60 bg-white px-2.5 py-1.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-amber-600"
                         />
                         <button
                           onClick={() => onLinkPending(person.track_id)}
                           disabled={linkingTrackId === person.track_id}
-                          className="rounded border border-zinc-600/60 bg-[#212833] px-3 py-1.5 text-sm font-medium text-zinc-100 hover:bg-zinc-700 disabled:opacity-50"
+                          className="rounded border border-zinc-200/60 bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 hover:bg-zinc-100 disabled:opacity-50"
                         >
                           {linkingTrackId === person.track_id
                             ? "Linking…"
@@ -96,7 +96,7 @@ export default function ExceptionsPanel({
 
           {hasCompleted && (
             <div>
-              <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+              <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-zinc-500">
                 Recently completed
               </p>
               <div className="space-y-2">
@@ -106,12 +106,12 @@ export default function ExceptionsPanel({
                   .map((person) => (
                     <div
                       key={`${person.queue_number}-${person.completed_at}`}
-                      className="flex items-center justify-between rounded-md border border-zinc-600/60 bg-[#283140] px-3.5 py-3 text-sm text-zinc-100 shadow-sm"
+                      className="flex items-center justify-between rounded-md border border-zinc-200/60 bg-zinc-100 px-3.5 py-3 text-sm text-zinc-900 shadow-sm"
                     >
-                      <span className="font-semibold font-mono text-zinc-100">
+                      <span className="font-semibold font-mono text-zinc-900">
                         {person.queue_label}
                       </span>
-                      <span className="font-mono text-xs text-zinc-400">
+                      <span className="font-mono text-xs text-zinc-500">
                         {person.total_wait_time || person.wait_time}
                       </span>
                       <StatusBadge
