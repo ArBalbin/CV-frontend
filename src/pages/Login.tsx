@@ -164,7 +164,7 @@ export default function Login() {
       </div>
 
       <footer className="mt-8 text-center border-t w-full bg-emerald-700 text-xs py-4 border-zinc-400 text-zinc-100 space-y-1">
-        <p>&copy; {currentYear} QueueEx. All rights reserved.</p>
+        <p>&copy; {currentYear} QueueEx. NCF. All rights reserved.</p>
       </footer>
     </main>
   );

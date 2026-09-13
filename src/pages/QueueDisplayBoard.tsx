@@ -314,8 +314,7 @@ export default function QueueDisplayBoard() {
               className="h-5 w-auto opacity-80 object-contain grayscale"
             />
             <span>
-              &copy; {new Date().getFullYear()} QueueEx. All rights reserved.
-              NCF
+              &copy; {new Date().getFullYear()} QueueEx. NCF. All rights reserved.
             </span>
           </div>
         </div>

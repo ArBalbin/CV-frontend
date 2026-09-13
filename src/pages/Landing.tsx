@@ -239,8 +239,8 @@ export default function Landing() {
         </div>
       </section>
 
-      <footer className="py-12 px-8 bg-emerald-700 text-xs text-zinc-100">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <footer className="py-5 px-8 bg-emerald-700 text-xs text-zinc-100">
+        <div className="max-w-7xl mx-auto flex flex-col  items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <img
               src={Logo}
@@ -248,7 +248,8 @@ export default function Landing() {
               className="h-5 w-auto object-contain grayscale"
             />
             <span>
-              &copy; {new Date().getFullYear()} QueueEx. All rights reserved.
+              &copy; {new Date().getFullYear()} QueueEx. NCF. All rights
+              reserved.
             </span>
           </div>
         </div>
