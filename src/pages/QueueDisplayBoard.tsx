@@ -1,7 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
-import { Monitor, Users, CheckCircle2, Hash, Volume2, VolumeX } from 'lucide-react';
-import { apiClient } from '../config/api';
-import { QueueDisplayData, QueuePerson } from '../types/api';
+import { useEffect, useRef, useState } from "react";
+import {
+  Monitor,
+  Users,
+  CheckCircle2,
+  Hash,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
+import { apiClient } from "../config/api";
+import { QueueDisplayData, QueuePerson } from "../types/api";
+import Logo from "../assets/img/Logo.png";
+import { MdError } from "react-icons/md";
 
 const POLL_MS = 3000;
 
@@ -9,30 +18,37 @@ function counterLabel(n: number) {
   return `Counter ${n}`;
 }
 
-function CounterCard({ counter, person }: { counter: number; person?: QueuePerson }) {
+function CounterCard({
+  counter,
+  person,
+}: {
+  counter: number;
+  person?: QueuePerson;
+}) {
   return (
     <div
-      className={`flex flex-col items-center justify-center rounded-2xl border-2 p-6 transition-all duration-500 ${
+      className={`flex flex-col items-center justify-center rounded-sm border py-6 transition-all duration-200 ${
         person
-          ? 'border-teal-400 bg-teal-50 shadow-lg shadow-teal-100'
-          : 'border-slate-200 bg-white'
+          ? "border-emerald-400 bg-white shadow-md shadow-emerald-100"
+          : "border-emerald-600 bg-emerald-700"
       }`}
     >
-      <p className="text-sm font-semibold uppercase tracking-widest text-slate-400">
+      <p className="text-xs font-semibold uppercase tracking-wider text-emerald-100">
         {counterLabel(counter)}
       </p>
+      <div className="h-px bg-zinc-400 w-full mt-4" />
       {person ? (
         <>
-          <p className="mt-3 text-7xl font-black tracking-tight text-teal-700">
+          <p className="mt-3 text-6xl font-black tracking-tight text-emerald-100 font-mono">
             {person.queue_label}
           </p>
-          <span className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-teal-100 px-3 py-1 text-sm font-semibold text-teal-800">
-            <span className="h-2 w-2 animate-pulse rounded-full bg-teal-500" />
+          <span className="mt-3 inline-flex items-center gap-1.5 rounded border border-emerald-300 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-100">
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
             Now Serving
           </span>
         </>
       ) : (
-        <p className="mt-4 text-4xl font-bold text-slate-300">—</p>
+        <p className="mt-4 text-3xl font-bold text-emerald-100">—</p>
       )}
     </div>
   );
@@ -44,11 +60,12 @@ export default function QueueDisplayBoard() {
   const [voiceEnabled, setVoiceEnabled] = useState(true);
   const [voiceUnlocked, setVoiceUnlocked] = useState(false);
 
-  // These refs let callbacks always read the latest state without re-subscribing
   const voiceEnabledRef = useRef(true);
   const voiceUnlockedRef = useRef(false);
   const announcedRef = useRef<Set<string>>(new Set());
-  const pendingRef = useRef<Array<{ queueNumber: number; counterNumber: number }>>([]);
+  const pendingRef = useRef<
+    Array<{ queueNumber: number; counterNumber: number }>
+  >([]);
   const speakingRef = useRef(false);
 
   voiceEnabledRef.current = voiceEnabled;
@@ -70,7 +87,6 @@ export default function QueueDisplayBoard() {
     utterance.volume = 1;
     utterance.onend = () => {
       speakingRef.current = false;
-      // Small gap between announcements
       setTimeout(speakNext, 800);
     };
     utterance.onerror = () => {
@@ -80,21 +96,17 @@ export default function QueueDisplayBoard() {
     window.speechSynthesis.speak(utterance);
   }
 
-  // Activate voice with a user gesture — required by all modern browsers
   function activateVoice() {
-    if (!('speechSynthesis' in window)) return;
-    // Speak a zero-volume utterance to unlock the speech engine
-    const unlock = new SpeechSynthesisUtterance(' ');
+    if (!("speechSynthesis" in window)) return;
+    const unlock = new SpeechSynthesisUtterance(" ");
     unlock.volume = 0;
     unlock.onend = () => {
       setVoiceUnlocked(true);
-      // Drain any announcements that queued up while waiting for activation
       setTimeout(speakNext, 200);
     };
     window.speechSynthesis.speak(unlock);
   }
 
-  // Watch counter_assignments: announce any new number that just reached a counter
   useEffect(() => {
     if (!data) return;
     let added = false;
@@ -103,7 +115,10 @@ export default function QueueDisplayBoard() {
       const key = `${p.queue_number}-${p.counter_number}`;
       if (announcedRef.current.has(key)) return;
       announcedRef.current.add(key);
-      pendingRef.current.push({ queueNumber: p.queue_number, counterNumber: p.counter_number });
+      pendingRef.current.push({
+        queueNumber: p.queue_number,
+        counterNumber: p.counter_number,
+      });
       added = true;
     });
     if (added && voiceUnlockedRef.current) speakNext();
@@ -111,7 +126,7 @@ export default function QueueDisplayBoard() {
 
   const fetchDisplay = async () => {
     try {
-      const res = await apiClient.get<QueueDisplayData>('/api/queue/display');
+      const res = await apiClient.get<QueueDisplayData>("/api/queue/display");
       setData(res.data);
       setError(false);
     } catch {
@@ -135,89 +150,101 @@ export default function QueueDisplayBoard() {
     return data?.counter_assignments.find((p) => p.counter_number === counter);
   }
 
-  // Waiting list: people beyond counter capacity (position > num_counters)
   const waiting = (data?.active_queue ?? []).filter(
     (p) => p.counter_number == null,
   );
 
   return (
-    <div className="relative min-h-screen bg-slate-950 text-white">
-
-      {/* Voice activation overlay — must click once to unlock TTS */}
+    <div className="relative min-h-screen flex flex-col bg-zinc-100 text-emerald-950">
       {!voiceUnlocked && (
         <div
           className="fixed inset-0 z-50 flex cursor-pointer flex-col items-center justify-center bg-black/80 backdrop-blur-sm"
           onClick={activateVoice}
         >
-          <div className="rounded-2xl border border-teal-500/30 bg-slate-900 px-12 py-10 text-center shadow-2xl">
-            <Volume2 className="mx-auto mb-5 h-16 w-16 text-teal-400" />
-            <p className="text-3xl font-bold text-white">Tap to Activate</p>
-            <p className="mt-3 text-base text-slate-400">
-              Voice announcements will play automatically
+          <div className="rounded-lg border border-emerald-200 bg-white px-10 py-8 text-center shadow-2xl">
+            <Volume2 className="mx-auto mb-4 h-12 w-12 text-emerald-600" />
+            <p className="text-xl font-semibold text-emerald-950">
+              Click to Initialize Display Audio
             </p>
-            <p className="mt-1 text-sm text-slate-500">
-              e.g. "Customer number 3, please proceed to Counter 1"
+            <p className="mt-2 text-xs text-emerald-600">
+              Browser policy requires user interaction to enable synthesized
+              voice alerts.
             </p>
-            <div className="mt-6 animate-pulse rounded-full bg-teal-500/20 px-6 py-2 text-sm font-semibold text-teal-300">
-              Click anywhere to continue
+            <div className="mt-5 inline-flex items-center rounded border border-emerald-300 bg-emerald-50 px-4 py-1.5 text-xs font-semibold text-emerald-700">
+              Click anywhere to start
             </div>
           </div>
         </div>
       )}
 
-      {/* Header */}
-      <header className="flex items-center justify-between border-b border-slate-800 bg-slate-900 px-8 py-4">
+      <header className="flex items-center justify-between border-b border-emerald-200 bg-emerald-700 px-8 py-4 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="rounded-lg bg-teal-500/10 p-2">
-            <Monitor className="h-6 w-6 text-teal-400" />
+          <div className="rounded border border-emerald-200 bg-emerald-50 p-2">
+            <Monitor className="h-5 w-5 text-emerald-600" />
           </div>
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-white">Queue Display Board</h1>
-            <p className="text-xs text-slate-400">Live service status</p>
+            <h1 className="text-base font-semibold uppercase font-mono text-zinc-100">
+              Queue Display Board
+            </h1>
+            <p className="text-xs text-zinc-200">
+              Live service status & active counters
+            </p>
           </div>
         </div>
         <div className="flex items-center gap-4">
           {data && (
-            <div className="flex items-center gap-3 text-sm text-slate-400">
+            <div className="flex items-center gap-4 text-xs font-medium text-emerald-700">
               <span className="flex items-center gap-1.5">
-                <Users className="h-4 w-4" />
+                <Users className="h-4 w-4 text-emerald-600" />
                 {data.queue_count} in queue
               </span>
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-teal-400" />
+                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                 {data.total_served} served today
               </span>
             </div>
           )}
           <button
             onClick={() => setVoiceEnabled((v) => !v)}
-            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors ${
+            className={`flex items-center gap-1.5 rounded border px-3 py-1.5 text-xs font-semibold transition-colors ${
               voiceEnabled && voiceUnlocked
-                ? 'bg-teal-500/20 text-teal-300 hover:bg-teal-500/30'
-                : 'bg-slate-700 text-slate-400 hover:bg-slate-600'
+                ? "border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                : "border-emerald-200 bg-white text-emerald-600 hover:bg-emerald-50"
             }`}
           >
-            {voiceEnabled ? <Volume2 className="h-4 w-4" /> : <VolumeX className="h-4 w-4" />}
-            {voiceEnabled ? 'Voice On' : 'Voice Off'}
+            {voiceEnabled ? (
+              <Volume2 className="h-4 w-4" />
+            ) : (
+              <VolumeX className="h-4 w-4" />
+            )}
+            {voiceEnabled ? "Voice On" : "Voice Off"}
           </button>
         </div>
       </header>
 
       {error && (
-        <div className="mx-6 mt-4 rounded-lg border border-red-800 bg-red-900/30 px-4 py-3 text-sm text-red-300">
-          Unable to reach backend. Retrying…
+        <div className="mt-4 w-fit mx-auto flex items-center gap-2 rounded border border-red-700 bg-red-600 px-4 py-2 text-xs font-medium text-zinc-100 shadow-sm">
+          <span className="relative inline-flex h-5 w-5 shrink-0">
+            <MdError
+              size={20}
+              className="absolute inset-0 animate-ping text-red-300 opacity-75"
+            />
+            <MdError size={20} className="relative animate-pulse text-white" />
+          </span>
+          Unable to reach backend. Retrying connection...
         </div>
       )}
 
-      <main className="mx-auto max-w-7xl px-6 py-8">
-        {/* Now Serving */}
+      <main className="mx-auto max-w-7xl w-full flex-1 px-6 py-6">
         <section>
-          <h2 className="mb-4 text-xs font-semibold uppercase tracking-widest text-slate-400">
+          <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-emerald-900">
             Now Serving
           </h2>
           <div
             className="grid gap-4"
-            style={{ gridTemplateColumns: `repeat(${Math.min(numCounters, 4)}, minmax(0, 1fr))` }}
+            style={{
+              gridTemplateColumns: `repeat(${Math.min(numCounters, 4)}, minmax(0, 1fr))`,
+            }}
           >
             {counters.map((c) => (
               <CounterCard key={c} counter={c} person={personAt(c)} />
@@ -225,35 +252,44 @@ export default function QueueDisplayBoard() {
           </div>
         </section>
 
-        {/* Waiting list */}
-        <section className="mt-10">
-          <div className="mb-4 flex items-center gap-2">
-            <Hash className="h-4 w-4 text-slate-400" />
-            <h2 className="text-xs font-semibold uppercase tracking-widest text-slate-400">
+        <section className="mt-8">
+          <div className="mb-3 flex items-center gap-2">
+            <Hash className="h-4 w-4 text-emerald-900" />
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-emerald-800">
               Waiting Queue
             </h2>
           </div>
 
           {waiting.length === 0 ? (
-            <div className="rounded-xl border border-slate-800 bg-slate-900 py-12 text-center text-slate-500">
-              {data?.queue_count ? 'All customers are currently at a counter' : 'No one waiting'}
+            <div className="rounded-lg border-2 border-dashed border-emerald-600 bg-emerald-50/60 py-10 text-center  text-emerald-800">
+              <span className="animate-pulse text-lg uppercase">
+                {data?.queue_count
+                  ? "All customers are currently assigned to a counter"
+                  : "No customers currently waiting"}
+              </span>
             </div>
           ) : (
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
               {waiting.map((p) => (
                 <div
                   key={p.queue_number}
-                  className={`rounded-xl border px-4 py-4 text-center transition-colors ${
-                    p.status === 'missing'
-                      ? 'border-amber-700 bg-amber-900/20'
-                      : 'border-slate-700 bg-slate-800'
+                  className={`rounded border px-4 py-3 text-center transition-colors ${
+                    p.status === "missing"
+                      ? "border-amber-300 bg-amber-50"
+                      : "border-emerald-200 bg-white"
                   }`}
                 >
-                  <p className="text-2xl font-bold text-white">{p.queue_label}</p>
-                  <p className="mt-1 text-xs text-slate-400">Position {p.position_in_line}</p>
-                  <p className="mt-0.5 text-xs text-slate-500">{p.wait_time}</p>
-                  {p.status === 'missing' && (
-                    <span className="mt-1.5 inline-block rounded-full bg-amber-600/30 px-2 py-0.5 text-xs font-medium text-amber-300">
+                  <p className="text-xl font-bold text-emerald-950 font-mono">
+                    {p.queue_label}
+                  </p>
+                  <p className="mt-1 text-xs text-emerald-600">
+                    Position {p.position_in_line}
+                  </p>
+                  <p className="mt-0.5 text-xs text-emerald-500 font-mono">
+                    {p.wait_time}
+                  </p>
+                  {p.status === "missing" && (
+                    <span className="mt-1.5 inline-block rounded border border-amber-300 bg-amber-100 px-2 py-0.5 text-[10px] font-semibold text-amber-700">
                       Not detected
                     </span>
                   )}
@@ -263,11 +299,26 @@ export default function QueueDisplayBoard() {
           )}
         </section>
 
-        <footer className="mt-10 rounded-xl border border-slate-800 bg-slate-900 px-5 py-3 text-center text-xs text-slate-500">
-          Check your queue status on the mobile app · Your position is shown above · Updates every{' '}
-          {POLL_MS / 1000} seconds
-        </footer>
+        <div className="mt-8 border border-emerald-500 w-[50%] justify-self-center bg-white px-5 py-3 text-center text-xs text-emerald-600 shadow-sm">
+          Monitor your queue status via the mobile app · Data updates
+          automatically every {POLL_MS / 1000}s
+        </div>
       </main>
+
+      <footer className="py-4 px-8 mt-auto bg-emerald-700 text-xs text-zinc-300">
+        <div className="max-w-7xl mx-auto flex flex-col items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <img
+              src={Logo}
+              alt="QueueFlow Logo"
+              className="h-5 w-auto opacity-80 object-contain grayscale"
+            />
+            <span>
+              &copy; {new Date().getFullYear()} QueueEx. NCF. All rights reserved.
+            </span>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

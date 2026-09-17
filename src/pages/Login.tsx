@@ -1,21 +1,22 @@
-import { FormEvent, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Activity, AlertCircle, Eye, EyeOff, LockKeyhole, Server, ShieldCheck, User, UserPlus } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
-import { API_BASE_URL, apiClient } from '../config/api';
-import { HealthStatus } from '../types/api';
-import { StatusBadge } from '../components/ui';
-import { formatDateTime } from '../utils/format';
+import { FormEvent, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { AlertCircle, CheckCircle2 } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
+import { apiClient } from "../config/api";
+import { HealthStatus } from "../types/api";
+import { LoginForm } from "../components/login/LoginForm";
+import { RegisterForm } from "../components/login/RegisterForm";
+import Logo from "../assets/img/GreenLogo.png";
 
 export default function Login() {
-  const [mode, setMode] = useState<'login' | 'register'>('login');
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState('');
-  const [regCode, setRegCode] = useState('');
+  const [mode, setMode] = useState<"login" | "register">("login");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [regCode, setRegCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
   const [health, setHealth] = useState<HealthStatus | null>(null);
   const [healthLoading, setHealthLoading] = useState(true);
@@ -27,7 +28,7 @@ export default function Login() {
 
     const fetchHealth = async () => {
       try {
-        const response = await apiClient.get<HealthStatus>('/health');
+        const response = await apiClient.get<HealthStatus>("/health");
         if (!cancelled) setHealth(response.data);
       } catch {
         if (!cancelled) setHealth(null);
@@ -44,228 +45,127 @@ export default function Login() {
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
-    setError('');
-    setSuccess('');
+    setError("");
+    setSuccess("");
     setLoading(true);
 
-    if (mode === 'login') {
+    if (mode === "login") {
       try {
         await login(username, password);
-        navigate('/computer-vision');
+        navigate("/computer-vision");
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Invalid credentials');
+        setError(err instanceof Error ? err.message : "Invalid credentials");
       } finally {
         setLoading(false);
       }
     } else {
       try {
-        await apiClient.post('/api/auth/register', {
+        await apiClient.post("/api/auth/register", {
           username,
           password,
           full_name: fullName,
           registration_code: regCode,
         });
-        setSuccess('Account created! You can now sign in.');
-        setMode('login');
-        setFullName('');
-        setRegCode('');
+        setSuccess("Account created! You can now sign in.");
+        setMode("login");
+        setFullName("");
+        setRegCode("");
       } catch (err: unknown) {
-        setError(err instanceof Error ? err.message : 'Registration failed');
+        setError(err instanceof Error ? err.message : "Registration failed");
       } finally {
         setLoading(false);
       }
     }
   };
 
-  const apiTone = health ? 'green' : healthLoading ? 'slate' : 'red';
-  const apiLabel = health ? 'API online' : healthLoading ? 'Checking API' : 'API offline';
+  const apiLabel = health
+    ? "API online"
+    : healthLoading
+      ? "Checking"
+      : "API offline";
+
+  const handleToggleMode = () => {
+    setMode(mode === "login" ? "register" : "login");
+    setError("");
+    setSuccess("");
+  };
+
+  const currentYear = new Date().getFullYear();
 
   return (
-    <main className="min-h-screen bg-slate-100 px-4 py-8 text-slate-950">
-      <div className="mx-auto grid min-h-[calc(100vh-4rem)] w-full max-w-6xl overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm lg:grid-cols-[1fr_440px]">
-        <section className="hidden border-r border-slate-200 bg-slate-950 p-10 text-white lg:flex lg:flex-col lg:justify-between">
-          <div className="flex flex-1 flex-col justify-center">
-            <div className="mx-auto max-w-sm text-center">
-              <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-2xl bg-blue-500 shadow-lg shadow-blue-950/30">
-                <Activity className="h-12 w-12" />
-              </div>
-              <h1 className="mt-7 text-4xl font-semibold tracking-normal">QUEUE FLOW</h1>
-              <p className="mt-3 text-base text-slate-300">Operations console</p>
-            </div>
-          </div>
-
-          <div>
-            <div className="grid gap-4">
-              <div className="rounded-lg border border-white/10 bg-white/5 p-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm text-slate-300">Backend</span>
-                  <StatusBadge label={apiLabel} tone={apiTone} />
-                </div>
-                <p className="mt-3 break-all text-sm text-slate-400">{API_BASE_URL}</p>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="rounded-lg border border-white/10 bg-white/5 p-4">
-                  <Server className="h-5 w-5 text-blue-300" />
-                  <p className="mt-3 text-xs uppercase tracking-wide text-slate-400">Database</p>
-                  <p className="mt-1 text-sm font-semibold">{health?.db ? 'Connected' : 'Unavailable'}</p>
-                </div>
-                <div className="rounded-lg border border-white/10 bg-white/5 p-4">
-                  <ShieldCheck className="h-5 w-5 text-emerald-300" />
-                  <p className="mt-3 text-xs uppercase tracking-wide text-slate-400">Snapshot</p>
-                  <p className="mt-1 text-sm font-semibold">{health?.snapshot ? 'Receiving' : 'Waiting'}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <p className="text-sm text-slate-400">
-            Last API check: {health ? formatDateTime(health.timestamp) : 'No response'}
+    <main className="min-h-screen bg-gradient-to-br from-white via-zinc-50 to-emerald-50/40 flex flex-col items-center justify-between">
+      <div className="w-full max-w-md my-auto">
+        <div className="mb-10 flex items-center justify-center flex-col">
+          <img src={Logo} className="w-auto h-28" alt="QueueFlow Logo" />
+          <p className="mt-2 text-sm text-zinc-500">
+            Queue management operations
           </p>
-        </section>
+        </div>
 
-        <section className="flex items-center justify-center p-6 sm:p-10">
-          <div className="w-full max-w-sm">
-            <div className="mb-8">
-              <div className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
-                {mode === 'login' ? <LockKeyhole className="h-6 w-6" /> : <UserPlus className="h-6 w-6" />}
-              </div>
-              <h2 className="text-2xl font-semibold tracking-normal text-slate-950">
-                {mode === 'login' ? 'Staff sign in' : 'Create staff account'}
-              </h2>
-              <p className="mt-2 text-sm text-slate-500">
-                {mode === 'login' ? 'Access the Queue Flow dashboards.' : 'Register with your staff code.'}
-              </p>
+        <div className="rounded-md border border-zinc-200 bg-white p-8 shadow-xl shadow-zinc-200/50">
+          <div className="mb-6 w-28 flex items-center justify-between rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2">
+            <div className="flex items-center gap-2">
+              <div
+                className={`h-2 w-2 rounded-full ${health ? "bg-emerald-500" : healthLoading ? "bg-zinc-400" : "bg-red-500"}`}
+              />
+              <span className="text-xs font-medium text-zinc-600">
+                {apiLabel}
+              </span>
             </div>
-
-            <div className="mb-5 flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
-              <div className="flex items-center gap-2 text-sm text-slate-600">
-                <Server className="h-4 w-4" />
-                Backend status
-              </div>
-              <StatusBadge label={apiLabel} tone={apiTone} />
-            </div>
-
-            {error && (
-              <div className="mb-5 flex items-start gap-3 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-700">
-                <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0" />
-                <span className="text-sm">{error}</span>
-              </div>
+            {health && (
+              <CheckCircle2 className="h-4 w-4 text-emerald-600 flex-shrink-0" />
             )}
-
-            {success && (
-              <div className="mb-5 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
-                {success}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-4">
-              {mode === 'register' && (
-                <div>
-                  <label htmlFor="fullName" className="mb-2 block text-sm font-semibold text-slate-700">
-                    Full Name
-                  </label>
-                  <div className="relative">
-                    <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                    <input
-                      type="text"
-                      id="fullName"
-                      value={fullName}
-                      onChange={(e) => setFullName(e.target.value)}
-                      className="field pl-10"
-                      placeholder="Your full name"
-                      required
-                    />
-                  </div>
-                </div>
-              )}
-
-              <div>
-                <label htmlFor="username" className="mb-2 block text-sm font-semibold text-slate-700">
-                  Username
-                </label>
-                <div className="relative">
-                  <User className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                  <input
-                    type="text"
-                    id="username"
-                    value={username}
-                    onChange={(event) => setUsername(event.target.value)}
-                    className="field pl-10"
-                    placeholder="Staff username"
-                    required
-                    autoFocus
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="password" className="mb-2 block text-sm font-semibold text-slate-700">
-                  Password
-                </label>
-                <div className="relative">
-                  <LockKeyhole className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    id="password"
-                    value={password}
-                    onChange={(event) => setPassword(event.target.value)}
-                    className="field px-10"
-                    placeholder="Password"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword((current) => !current)}
-                    className="absolute right-2 top-1/2 inline-flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg text-slate-500 transition hover:bg-slate-100 hover:text-slate-700"
-                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                    title={showPassword ? 'Hide password' : 'Show password'}
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </div>
-
-              {mode === 'register' && (
-                <div>
-                  <label htmlFor="regCode" className="mb-2 block text-sm font-semibold text-slate-700">
-                    Staff Registration Code
-                  </label>
-                  <div className="relative">
-                    <ShieldCheck className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                    <input
-                      type="text"
-                      id="regCode"
-                      value={regCode}
-                      onChange={(e) => setRegCode(e.target.value)}
-                      className="field pl-10"
-                      placeholder="Code provided by admin"
-                      required
-                    />
-                  </div>
-                </div>
-              )}
-
-              <button type="submit" disabled={loading} className="btn-primary w-full">
-                {loading
-                  ? mode === 'login' ? 'Signing in...' : 'Creating account...'
-                  : mode === 'login' ? 'Sign in' : 'Create account'}
-              </button>
-            </form>
-
-            <p className="mt-5 text-center text-sm text-slate-500">
-              {mode === 'login' ? "Don't have an account? " : 'Already have an account? '}
-              <button
-                type="button"
-                onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); setSuccess(''); }}
-                className="font-semibold text-blue-600 hover:underline"
-              >
-                {mode === 'login' ? 'Register' : 'Sign in'}
-              </button>
-            </p>
           </div>
-        </section>
+
+          {error && (
+            <div className="mb-6 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 px-4 py-3">
+              <AlertCircle className="mt-0.5 h-5 w-5 flex-shrink-0 text-red-500" />
+              <span className="text-sm text-red-700">{error}</span>
+            </div>
+          )}
+
+          {success && (
+            <div className="mb-6 flex items-start gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3">
+              <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-emerald-600" />
+              <span className="text-sm text-emerald-700">{success}</span>
+            </div>
+          )}
+
+          {mode === "login" ? (
+            <LoginForm
+              username={username}
+              setUsername={setUsername}
+              password={password}
+              setPassword={setPassword}
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
+              loading={loading}
+              onSubmit={handleSubmit}
+              onToggleMode={handleToggleMode}
+            />
+          ) : (
+            <RegisterForm
+              username={username}
+              setUsername={setUsername}
+              password={password}
+              setPassword={setPassword}
+              fullName={fullName}
+              setFullName={setFullName}
+              regCode={regCode}
+              setRegCode={setRegCode}
+              showPassword={showPassword}
+              setShowPassword={setShowPassword}
+              loading={loading}
+              onSubmit={handleSubmit}
+              onToggleMode={handleToggleMode}
+            />
+          )}
+        </div>
       </div>
+
+      <footer className="mt-8 text-center border-t w-full bg-emerald-700 text-xs py-4 border-zinc-400 text-zinc-100 space-y-1">
+        <p>&copy; {currentYear} QueueEx. NCF. All rights reserved.</p>
+      </footer>
     </main>
   );
 }

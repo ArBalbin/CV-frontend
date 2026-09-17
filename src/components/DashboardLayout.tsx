@@ -1,7 +1,18 @@
-import { ReactNode } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Activity, BarChart3, Eye, LayoutDashboard, LogOut, ShieldCheck, User, UserCircle } from 'lucide-react';
-import { useAuth } from '../contexts/AuthContext';
+import { ReactNode } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { IoPerson } from "react-icons/io5";
+import {
+  Activity,
+  BarChart3,
+  ExternalLink,
+  LogOut,
+  MonitorPlay,
+  UserCircle,
+} from "lucide-react";
+import { useAuth } from "../contexts/AuthContext";
+import Logo from "../assets/img/Logo.png";
+import LogoutModal from "../components/modals/LogoutModal";
 
 interface DashboardLayoutProps {
   title: string;
@@ -13,141 +24,150 @@ interface DashboardLayoutProps {
 
 const navItems = [
   {
-    label: 'Computer Vision',
-    path: '/computer-vision',
-    icon: Eye,
-  },
-  {
-    label: 'Queue Flow',
-    path: '/queueflow',
+    label: "QueuEx Dashboard",
+    path: "/queueflow",
     icon: Activity,
   },
   {
-    label: 'Queue Analytics',
-    path: '/queue-analytics',
+    label: "Queue Analytics",
+    path: "/queue-analytics",
     icon: BarChart3,
   },
   {
-    label: 'Profile',
-    path: '/profile',
+    label: "Profile",
+    path: "/profile",
     icon: UserCircle,
   },
 ];
 
-export default function DashboardLayout({ title, subtitle, children, eyebrow = 'Operations Console', actions }: DashboardLayoutProps) {
+export default function DashboardLayout({
+  title,
+  children,
+  actions,
+}: DashboardLayoutProps) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const [openLogout, setOpenLogout] = useState(false);
 
   const handleLogout = async () => {
     await logout();
-    navigate('/login');
+    setOpenLogout(false);
+    navigate("/login");
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 text-slate-950">
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-72 border-r border-slate-200 bg-slate-950 text-white lg:block">
-        <div className="flex h-full flex-col">
-          <div className="border-b border-white/10 px-6 py-6">
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500">
-                <LayoutDashboard className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-sm font-semibold">QUEUE FLOW</p>
-                <p className="text-xs text-slate-400">Thesis Prototype</p>
-              </div>
-            </div>
+    <div className="app-shell">
+      <aside className="sidebar">
+        <div className="sidebar-inner">
+          <div className="flex justify-center items-center py-6">
+            <img src={Logo} className="h-20 w-auto" />
           </div>
 
-          <nav className="flex-1 space-y-1 px-4 py-5">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const active = location.pathname === item.path;
-              return (
-                <button
-                  key={item.path}
-                  onClick={() => navigate(item.path)}
-                  className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm font-semibold transition ${
-                    active
-                      ? 'bg-blue-500 text-white shadow-sm'
-                      : 'text-slate-300 hover:bg-white/10 hover:text-white'
-                  }`}
-                >
-                  <Icon className="h-4 w-4" />
-                  {item.label}
-                </button>
-              );
-            })}
-          </nav>
+          <div className="sidebar-section">
+            <p className="sidebar-label">Workspace</p>
 
-          <div className="border-t border-white/10 p-4">
-            <button
-              onClick={() => navigate('/profile')}
-              className="mb-3 flex w-full items-center gap-3 rounded-lg bg-white/5 p-3 text-left transition hover:bg-white/10"
+            <nav className="sidebar-nav">
+              {navItems.map((item) => {
+                const Icon = item.icon;
+                const active = location.pathname === item.path;
+
+                return (
+                  <button
+                    key={item.path}
+                    onClick={() => navigate(item.path)}
+                    className={`nav-item ${active ? "active" : ""}`}
+                  >
+                    <Icon size={17} strokeWidth={1.8} />
+                    <span>{item.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+          </div>
+
+          <div className="sidebar-bottom">
+            <a
+              href="/queue-display"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mb-3 flex w-full items-center justify-between gap-2 border border-zinc-200 bg-zinc-300 px-3 py-2 text-[13px] font-medium text-zinc-900 transition hover:bg-zinc-100 hover:text-zinc-900"
             >
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10">
-                <User className="h-4 w-4" />
+              <span className="inline-flex items-center gap-2">
+                <MonitorPlay className="h-4 w-4" />
+                Display Board
+              </span>
+              <ExternalLink className="h-3.5 w-3.5 text-zinc-900" />
+            </a>
+
+            <div className="h-px bg-zinc-400 -mx-4 my-2" />
+
+            <div className="flex items-center gap-2">
+              <div className="account-avatar">
+                <IoPerson className="h-4 w-4" />
               </div>
-              <div className="min-w-0">
-                <p className="truncate text-sm font-semibold">{user?.username || 'Staff'}</p>
-                <p className="text-xs text-slate-400">Authenticated session</p>
+              <div className="account-copy">
+                <span className="account-name">
+                  {user?.username || "Staff"}
+                </span>
+                <span className="account-role">Authenticated session</span>
               </div>
-            </button>
-            <button onClick={handleLogout} className="flex w-full items-center justify-center gap-2 rounded-lg border border-white/10 px-3 py-2 text-sm font-semibold text-slate-200 transition hover:bg-white/10">
+            </div>
+
+            <div className="h-px bg-zinc-400 -mx-4 my-2" />
+            <button
+              onClick={() => setOpenLogout(true)}
+              className="flex items-center gap-4 p-2 text-zinc-100 hover:text-zinc-900 hover:bg-zinc-100/40 justify-start w-full"
+            >
               <LogOut className="h-4 w-4" />
-              Logout
+              Log out
             </button>
           </div>
         </div>
       </aside>
 
-      <div className="lg:pl-72">
-        <header className="sticky top-0 z-20 border-b border-slate-200 bg-white/95 backdrop-blur">
-          <div className="mx-auto flex max-w-[1800px] flex-col gap-4 px-4 py-4 sm:px-6 lg:px-8">
+      <div className="main-shell">
+        <header className="topbar">
+          <div className="topbar-inner">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div>
-                <div className="mb-2 inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-600">
-                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
-                  {eyebrow}
-                </div>
-                <h1 className="text-2xl font-semibold tracking-normal text-slate-950 md:text-3xl">{title}</h1>
-                <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
+              <div className="page-heading">
+                <h1>{title}</h1>
               </div>
-              {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+
+              {actions && <div className="topbar-actions">{actions}</div>}
             </div>
 
-            <div className="flex gap-2 overflow-x-auto lg:hidden">
+            <div className="mobile-nav">
               {navItems.map((item) => {
                 const Icon = item.icon;
                 const active = location.pathname === item.path;
+
                 return (
                   <button
                     key={item.path}
                     onClick={() => navigate(item.path)}
-                    className={`inline-flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition ${
-                      active
-                        ? 'bg-slate-950 text-white'
-                        : 'border border-slate-200 bg-white text-slate-700'
-                    }`}
+                    className={`mobile-nav-item ${active ? "active" : ""}`}
                   >
                     <Icon className="h-4 w-4" />
-                    {item.label}
+                    <span>{item.label}</span>
                   </button>
                 );
               })}
-              <button onClick={handleLogout} className="inline-flex items-center gap-2 rounded-lg border border-red-200 bg-white px-3 py-2 text-sm font-semibold text-red-600">
+              <button onClick={handleLogout} className="mobile-nav-item">
                 <LogOut className="h-4 w-4" />
-                Logout
+                <span>Logout</span>
               </button>
             </div>
           </div>
         </header>
 
-        <main className="mx-auto max-w-[1800px] px-4 py-6 sm:px-6 lg:px-8">
-          {children}
-        </main>
+        <main className="page-content">{children}</main>
       </div>
+      <LogoutModal
+        isOpen={openLogout}
+        onClose={() => setOpenLogout(false)}
+        onConfirm={handleLogout}
+      />
     </div>
   );
 }

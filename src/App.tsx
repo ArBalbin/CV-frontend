@@ -1,12 +1,12 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { ReactNode } from 'react';
-import { AuthProvider, useAuth } from './contexts/AuthContext';
-import Login from './pages/Login';
-import ComputerVisionDashboard from './pages/ComputerVisionDashboard';
-import QueueFlowDashboard from './pages/QueueFlowDashboard';
-import QueueAnalytics from './pages/QueueAnalytics';
-import Profile from './pages/Profile';
-import QueueDisplayBoard from './pages/QueueDisplayBoard';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ReactNode } from "react";
+import { AuthProvider, useAuth } from "./contexts/AuthContext";
+import Login from "./pages/Login";
+import QueueFlowDashboard from "./pages/QueueFlowDashboard";
+import QueueAnalytics from "./pages/QueueAnalytics";
+import Profile from "./pages/Profile";
+import Landing from "./pages/Landing";
+import QueueDisplayBoard from "./pages/QueueDisplayBoard";
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -27,15 +27,12 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
+          <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/queue-display" element={<QueueDisplayBoard />} />
           <Route
             path="/computer-vision"
-            element={
-              <ProtectedRoute>
-                <ComputerVisionDashboard />
-              </ProtectedRoute>
-            }
+            element={<Navigate to="/queueflow" replace />}
           />
           <Route
             path="/queueflow"
@@ -61,8 +58,8 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="/" element={<Navigate to="/computer-vision" replace />} />
-          <Route path="*" element={<Navigate to="/computer-vision" replace />} />
+          <Route path="/" element={<Navigate to="/queueflow" replace />} />
+          <Route path="*" element={<Navigate to="/queueflow" replace />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
