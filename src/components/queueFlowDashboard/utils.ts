@@ -19,7 +19,6 @@ export const initialQueueState: QueueState = {
   pending_link_alerts: [],
   total_served: 0,
   completed: [],
-  noshow_alerts: [],
   on_way_notifications: [],
   counter_assignments: [],
   newly_called: [],
@@ -55,7 +54,6 @@ export function extractQueueState(data: QueueData): QueueState {
     pending_link_alerts: data.pending_link_alerts || [],
     total_served: data.total_served || 0,
     completed: data.completed || [],
-    noshow_alerts: data.noshow_alerts || [],
     on_way_notifications: data.on_way_notifications || [],
     counter_assignments: data.counter_assignments || [],
     newly_called: data.newly_called || [],
@@ -78,4 +76,22 @@ export function utilizationTone(
   if (utilization >= 0.9) return "red";
   if (utilization >= 0.7) return "amber";
   return "green";
+}
+
+/** "3m 35s" from a count of seconds, for the away-from-zone indicator. */
+export function formatAway(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return m > 0 ? `${m}m ${s}s` : `${s}s`;
+}
+
+/**
+ * Colour for how long the person whose turn it is has been out of view.
+ * This is a reading, not a rule: nothing in the system acts on these
+ * boundaries, they only make the elapsed time easier to judge at a glance.
+ */
+export function awayTone(seconds: number): "slate" | "amber" | "red" {
+  if (seconds >= 300) return "red";
+  if (seconds >= 180) return "amber";
+  return "slate";
 }

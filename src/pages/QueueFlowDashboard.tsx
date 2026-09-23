@@ -42,7 +42,6 @@ import {
   initialQueueData,
   initialQueueState,
   MetricsOverview,
-  NoshowAlerts,
   OnWayNotifications,
   PeopleChartSample,
   QueueChartSample,
@@ -72,10 +71,7 @@ export default function QueueFlowDashboard() {
   const [isPaused, setIsPaused] = useState(false);
   const [isConnected, setIsConnected] = useState(true);
   const [markingDone, setMarkingDone] = useState<number | null>(null);
-  const [noshowWindow, setNoshowWindow] = useState(180);
-  const [noshowInput, setNoshowInput] = useState("180");
-  const [savingNoshow, setSavingNoshow] = useState(false);
-  const [savedNoshow, setSavedNoshow] = useState(false);
+  const [markingNoShow, setMarkingNoShow] = useState<number | null>(null);
   const [lastError, setLastError] = useState("");
   const [streamError, setStreamError] = useState(false);
   const [streamKey, setStreamKey] = useState(0);
@@ -130,17 +126,6 @@ export default function QueueFlowDashboard() {
     }
   };
 
-  const fetchNoshowConfig = async () => {
-    try {
-      const response = await apiClient.get<{ noshow_window_seconds: number }>(
-        "/api/queue/noshow_config",
-      );
-      setNoshowWindow(response.data.noshow_window_seconds);
-      setNoshowInput(String(response.data.noshow_window_seconds));
-    } catch {
-      setLastError("No-show settings are unavailable.");
-    }
-  };
 
   const fetchData = async () => {
     try {
@@ -196,7 +181,6 @@ export default function QueueFlowDashboard() {
       fetchZone(),
       fetchPrediction(),
       fetchData(),
-      fetchNoshowConfig(),
     ]);
   };
 
@@ -227,6 +211,21 @@ export default function QueueFlowDashboard() {
       setLastError(`Could not complete ${queueLabel(queueNumber)}.`);
     } finally {
       setMarkingDone(null);
+    }
+  };
+
+  // Staff decision, not a detection: nothing counts down and nothing is
+  // removed automatically. The person at the desk can see the queue area and
+  // says the student whose turn it is has not come.
+  const markNoShow = async (queueNumber: number) => {
+    setMarkingNoShow(queueNumber);
+    try {
+      await apiClient.post("/api/queue/no_show", { queue_number: queueNumber });
+      await Promise.all([fetchData(), fetchPrediction()]);
+    } catch {
+      setLastError(`Could not mark ${queueLabel(queueNumber)} as a no-show.`);
+    } finally {
+      setMarkingNoShow(null);
     }
   };
 
@@ -299,25 +298,6 @@ export default function QueueFlowDashboard() {
     }
   };
 
-  const saveNoshowConfig = async () => {
-    const seconds = Number.parseInt(noshowInput, 10);
-    if (Number.isNaN(seconds) || seconds < 30 || seconds > 300) {
-      setLastError("No-show window must be between 30 and 300 seconds.");
-      return;
-    }
-
-    setSavingNoshow(true);
-    try {
-      await apiClient.post("/api/queue/noshow_config", { seconds });
-      setNoshowWindow(seconds);
-      setSavedNoshow(true);
-      window.setTimeout(() => setSavedNoshow(false), 1800);
-    } catch {
-      setLastError("Could not save no-show settings.");
-    } finally {
-      setSavingNoshow(false);
-    }
-  };
 
   const chartData = useMemo(
     () => buildQueueChartData(chartSamples),
@@ -403,7 +383,6 @@ export default function QueueFlowDashboard() {
         <ErrorBanner message={lastError} onDismiss={() => setLastError("")} />
       )}
 
-      <NoshowAlerts alerts={queueState.noshow_alerts} onBump={markDone} />
       <OnWayNotifications notifications={queueState.on_way_notifications} />
 
       {/* Streamlined Navigation Tabs */}
@@ -483,6 +462,8 @@ export default function QueueFlowDashboard() {
                 onResetQueue={resetQueue}
                 markingDone={markingDone}
                 onMarkDone={markDone}
+                markingNoShow={markingNoShow}
+                onMarkNoShow={markNoShow}
               />
             </div>
           </div>
@@ -541,12 +522,6 @@ export default function QueueFlowDashboard() {
               <ServiceControlsPanel
                 activeCounters={data.active_counters}
                 onAdjustCounters={adjustCounters}
-                noshowWindow={noshowWindow}
-                noshowInput={noshowInput}
-                onNoshowInputChange={setNoshowInput}
-                savingNoshow={savingNoshow}
-                savedNoshow={savedNoshow}
-                onSaveNoshow={saveNoshowConfig}
               />
               <ExceptionsPanel
                 queueState={queueState}

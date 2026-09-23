@@ -17,7 +17,6 @@ export const emptyQueueState: QueueState = {
   pending_count: 0,
   total_served: 0,
   completed: [],
-  noshow_alerts: [],
   on_way_notifications: [],
   counter_assignments: [],
   newly_called: [],
@@ -62,7 +61,6 @@ export function analyticsToQueueData(analytics: QueueAnalyticsResponse): QueueDa
     predicted_wait_5min: forecast?.in_5min?.estimated_wait_time_minutes || 0,
     predicted_wait_15min: forecast?.in_15min?.estimated_wait_time_minutes || 0,
     predicted_wait_30min: forecast?.in_30min?.estimated_wait_time_minutes || 0,
-    noshow_alerts: analytics.noshow_alerts || [],
     completed: analytics.recent_completed || [],
   };
 }

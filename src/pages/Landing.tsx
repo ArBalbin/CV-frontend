@@ -156,12 +156,12 @@ export default function Landing() {
                   <PiChartBar className="h-6 w-6" />
                 </div>
                 <h3 className="text-sm font-semibold text-zinc-900 mb-3">
-                  No-show handling and admin analytics
+                  Counter assignment and admin analytics
                 </h3>
                 <p className="text-sm text-justify text-zinc-600 leading-relaxed font-normal">
-                  Missed turns auto-bump after a countdown, counters are
-                  assigned automatically, and staff can review processing time
-                  per window on the admin dashboard.
+                  Counters are assigned automatically and stay with an entry
+                  until it is done, and staff can review processing time per
+                  window on the admin dashboard.
                 </p>
               </div>
               <div className="mt-8 pt-6 border-t border-zinc-200 text-xs text-zinc-500">
@@ -228,7 +228,7 @@ export default function Landing() {
                 • Counter #2 assigned to ticket Q-142
               </p>
               <p className="text-zinc-600">
-                • No-show alert triggered on Q-138, auto-bump pending
+                • Q-138 recognized at the queue zone, number issued
               </p>
               <p className="text-zinc-900 flex items-center gap-2 mt-4 pt-4 border-t border-zinc-200 font-sans">
                 <span className="h-1.5 w-1.5 bg-emerald-600 animate-pulse" />

@@ -1,7 +1,7 @@
-import { CheckCircle2, Clock3, Hash, RefreshCcw, UserPlus } from "lucide-react";
+import { CheckCircle2, Clock3, Hash, RefreshCcw, UserPlus, UserX } from "lucide-react";
 import { EmptyState, Panel, StatusBadge } from "../ui";
 import { QueueState } from "../../types/api";
-import { positionTone } from "./utils";
+import { awayTone, formatAway, positionTone } from "./utils";
 
 interface QueueTrackerPanelProps {
   queueState: QueueState;
@@ -12,6 +12,8 @@ interface QueueTrackerPanelProps {
   onResetQueue: () => void;
   markingDone: number | null;
   onMarkDone: (queueNumber: number) => void;
+  markingNoShow: number | null;
+  onMarkNoShow: (queueNumber: number) => void;
 }
 
 export default function QueueTrackerPanel({
@@ -23,6 +25,8 @@ export default function QueueTrackerPanel({
   onResetQueue,
   markingDone,
   onMarkDone,
+  markingNoShow,
+  onMarkNoShow,
 }: QueueTrackerPanelProps) {
   return (
     <Panel className="p-5 border border-zinc-200/80 bg-white shadow-sm rounded-sm transition hover:border-zinc-300 text-zinc-900">
@@ -87,19 +91,10 @@ export default function QueueTrackerPanel({
       ) : (
         <div className="space-y-3">
           {queueState.active_queue.map((person) => {
-            const alert = queueState.noshow_alerts.find(
-              (item) => item.queue_number_int === person.queue_number,
-            );
             return (
               <div
                 key={person.queue_number}
-                className={`rounded-md border p-4 bg-zinc-100 shadow-sm text-zinc-900 ${
-                  alert?.status === "critical"
-                    ? "border-red-600/60"
-                    : alert
-                      ? "border-amber-200/60"
-                      : "border-zinc-200/60"
-                }`}
+                className="rounded-md border border-zinc-200/60 p-4 bg-zinc-100 shadow-sm text-zinc-900"
               >
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                   <div className="flex items-center gap-3">
@@ -124,12 +119,14 @@ export default function QueueTrackerPanel({
                             person.counter_number,
                           )}
                         />
-                        {alert && (
-                          <StatusBadge
-                            label={`${alert.seconds_remaining}s bump`}
-                            tone={alert.status === "critical" ? "red" : "amber"}
-                          />
-                        )}
+                        {person.status === "missing" &&
+                          person.seconds_missing != null &&
+                          person.seconds_missing > 0 && (
+                            <StatusBadge
+                              label={`Away ${formatAway(person.seconds_missing)}`}
+                              tone={awayTone(person.seconds_missing)}
+                            />
+                          )}
                       </div>
                       <div className="mt-1 flex flex-wrap gap-3 font-mono text-xs text-zinc-500">
                         <span className="inline-flex items-center gap-1">
@@ -145,14 +142,25 @@ export default function QueueTrackerPanel({
                       </div>
                     </div>
                   </div>
-                  <button
-                    onClick={() => onMarkDone(person.queue_number)}
-                    disabled={markingDone === person.queue_number}
-                    className="inline-flex items-center gap-1.5 rounded-md border border-zinc-200/60 bg-white px-3.5 py-1.5 text-sm font-medium text-zinc-900 hover:bg-zinc-100 disabled:opacity-50 shadow-sm transition"
-                  >
-                    <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                    {markingDone === person.queue_number ? "Saving" : "Done"}
-                  </button>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <button
+                      onClick={() => onMarkDone(person.queue_number)}
+                      disabled={markingDone === person.queue_number}
+                      className="inline-flex items-center gap-1.5 rounded-md border border-zinc-200/60 bg-white px-3.5 py-1.5 text-sm font-medium text-zinc-900 hover:bg-zinc-100 disabled:opacity-50 shadow-sm transition"
+                    >
+                      <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                      {markingDone === person.queue_number ? "Saving" : "Done"}
+                    </button>
+                    <button
+                      onClick={() => onMarkNoShow(person.queue_number)}
+                      disabled={markingNoShow === person.queue_number}
+                      title="The student whose turn it is has not arrived"
+                      className="inline-flex items-center gap-1.5 rounded-md border border-zinc-200/60 bg-white px-3.5 py-1.5 text-sm font-medium text-zinc-900 hover:bg-zinc-100 disabled:opacity-50 shadow-sm transition"
+                    >
+                      <UserX className="h-4 w-4 text-amber-600" />
+                      {markingNoShow === person.queue_number ? "Saving" : "No-show"}
+                    </button>
+                  </div>
                 </div>
               </div>
             );

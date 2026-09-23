@@ -29,6 +29,7 @@ export interface QueuePerson {
   position_in_line: number;
   wait_time: string;
   wait_time_seconds: number;
+  seconds_missing?: number;
   joined_at: string;
   joined_at_full: string;
   joined_at_iso?: string;
@@ -52,12 +53,6 @@ export interface QueueDisplayData {
   active_counters: number;
 }
 
-export interface NoshowAlert {
-  queue_number: string;
-  queue_number_int: number;
-  seconds_remaining: number;
-  status: 'warning' | 'critical';
-}
 
 export interface OnWayNotification {
   id: string;
@@ -106,7 +101,6 @@ export interface QueueState {
   pending_link_alerts?: PendingLinkAlert[];
   total_served: number;
   completed: CompletedQueuePerson[];
-  noshow_alerts: NoshowAlert[];
   on_way_notifications: OnWayNotification[];
   counter_assignments: QueuePerson[];
   newly_called: NewlyCalled[];
@@ -183,7 +177,6 @@ export interface QueueAnalytics {
     total_served: number;
     total_no_show: number;
     completion_rate_percent: number;
-    no_show_rate_percent: number;
     data_status: 'live' | 'stale' | string;
     data_age_seconds: number;
   };
@@ -220,7 +213,6 @@ export interface QueueAnalytics {
   };
   active_queue: QueuePrediction['active_queue'];
   recent_completed: CompletedQueuePerson[];
-  noshow_alerts: NoshowAlert[];
   zone: QueueZone;
   recommendation: string;
 }
