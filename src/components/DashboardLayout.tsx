@@ -8,6 +8,7 @@ import {
   ExternalLink,
   LogOut,
   MonitorPlay,
+  ShieldCheck,
   UserCircle,
 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
@@ -32,6 +33,11 @@ const navItems = [
     label: "Queue Analytics",
     path: "/queue-analytics",
     icon: BarChart3,
+  },
+  {
+    label: "Data Retention",
+    path: "/data-retention",
+    icon: ShieldCheck,
   },
   {
     label: "Profile",

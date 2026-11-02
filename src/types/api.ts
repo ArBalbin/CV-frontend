@@ -230,3 +230,42 @@ export interface UserProfileResponse {
     created_at?: string;
   };
 }
+
+export interface RetentionStudent {
+  student_id: number;
+  school_id: string;
+  full_name: string | null;
+  last_activity: string | null;
+  archived_at: string | null;
+}
+
+export interface RetentionRunReport {
+  ran_at: string;
+  actor: string;
+  dry_run: boolean;
+  due_for_archive: number;
+  due_for_deletion: number;
+  archived: number;
+  deleted: number;
+}
+
+export interface RetentionOverview {
+  policy: {
+    enabled: boolean;
+    archive_after_days: number;
+    delete_after_days: number;
+    interval_hours: number;
+  };
+  counts: {
+    total?: number;
+    active?: number;
+    archived?: number;
+    with_face_data?: number;
+    without_consent?: number;
+    due_for_archive?: number;
+    due_for_deletion?: number;
+  };
+  due_for_archive: RetentionStudent[];
+  due_for_deletion: RetentionStudent[];
+  last_run: RetentionRunReport | null;
+}
