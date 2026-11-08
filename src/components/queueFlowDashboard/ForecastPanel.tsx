@@ -1,8 +1,7 @@
 import { Clock3 } from "lucide-react";
-import { Panel, ProgressBar, StatusBadge } from "../ui";
+import { Panel, StatusBadge } from "../ui";
 import { ForecastItem, QueueData, QueuePrediction } from "../../types/api";
 import { formatAgeSeconds, numberLabel } from "../../utils/format";
-import { utilizationTone } from "./utils";
 
 interface ForecastPanelProps {
   data: QueueData;
@@ -16,8 +15,6 @@ export default function ForecastPanel({
   data,
   prediction,
   forecastCards,
-  utilization,
-  utilizationPercent,
 }: ForecastPanelProps) {
   return (
     <Panel className="p-5 border border-zinc-200/80 bg-white shadow-sm rounded-sm transition hover:border-zinc-300 text-zinc-900">
@@ -27,7 +24,7 @@ export default function ForecastPanel({
             Wait-Time Forecast
           </h2>
           <p className="mt-1 text-sm text-zinc-500">
-            New arrival:{" "}
+            If someone joins now:{" "}
             <span className="font-semibold text-zinc-900">
               {prediction?.new_arrival.estimated_wait_time_label ||
                 `${numberLabel(data.estimated_wait_time)} min`}
@@ -37,7 +34,9 @@ export default function ForecastPanel({
         <StatusBadge
           label={
             prediction
-              ? `${prediction.data_age_seconds}s data age`
+              ? prediction.data_status === "stale"
+                ? "Camera not updating"
+                : "Live"
               : formatAgeSeconds(data.timestamp)
           }
           tone={prediction?.data_status === "stale" ? "amber" : "green"}
@@ -70,20 +69,6 @@ export default function ForecastPanel({
         ))}
       </div>
 
-      <div className="mt-5 rounded-md border border-zinc-200/60 bg-zinc-100 p-4 shadow-sm">
-        <div className="mb-3 flex items-center justify-between text-sm">
-          <span className="font-semibold text-zinc-600">
-            System utilization
-          </span>
-          <span className="font-mono font-semibold text-zinc-900">
-            {numberLabel(utilizationPercent, 1)}%
-          </span>
-        </div>
-        <ProgressBar
-          value={utilizationPercent}
-          tone={utilizationTone(utilization)}
-        />
-      </div>
     </Panel>
   );
 }

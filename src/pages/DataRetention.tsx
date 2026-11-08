@@ -77,6 +77,9 @@ export default function DataRetention() {
   const [data, setData] = useState<RetentionOverview | null>(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  // Shown beside the Preview and Apply buttons, where the staff member is
+  // looking; the page-top notice was off screen when they clicked.
+  const [policyResult, setPolicyResult] = useState("");
   const [busy, setBusy] = useState(false);
   const [graduates, setGraduates] = useState("");
   const [archiveSel, setArchiveSel] = useState<Set<number>>(new Set());
@@ -139,21 +142,22 @@ export default function DataRetention() {
   };
 
   const runPolicy = async (dryRun: boolean) => {
-    if (!dryRun && !window.confirm("Apply the retention policy now?")) return;
+    if (!dryRun && !window.confirm("Archive and delete every account that is due now?")) return;
     setBusy(true);
+    setPolicyResult("");
     try {
       const response = await apiClient.post<RetentionRunReport>("/api/retention/run", {
         dry_run: dryRun,
       });
       const r = response.data;
-      setNotice(
+      setPolicyResult(
         dryRun
-          ? `Preview: ${r.due_for_archive} account(s) would be archived and ${r.due_for_deletion} deleted.`
-          : `Applied: ${r.archived} archived, ${r.deleted} deleted.`,
+          ? `Preview only, nothing was changed: ${r.due_for_archive} account(s) would be archived and ${r.due_for_deletion} deleted.`
+          : `Policy applied: ${r.archived} account(s) archived and ${r.deleted} deleted.`,
       );
       await refresh();
     } catch {
-      setError("Could not run the retention policy.");
+      setPolicyResult("Could not run the retention policy. Check that you are still signed in.");
     } finally {
       setBusy(false);
     }
@@ -221,19 +225,31 @@ export default function DataRetention() {
               <p className="mt-3 text-sm text-zinc-500">Loading…</p>
             )}
             <p className="mt-4 text-xs text-zinc-500">
-              Last automatic run:{" "}
+              Last run:{" "}
               {data?.last_run
-                ? `${formatDateTime(data.last_run.ran_at)} (${data.last_run.archived} archived, ${data.last_run.deleted} deleted)`
+                ? `${formatDateTime(data.last_run.ran_at)}, ${
+                    data.last_run.actor === "scheduler" ? "automatic" : `by ${data.last_run.actor}`
+                  } (${data.last_run.archived} archived, ${data.last_run.deleted} deleted)`
                 : "not yet since the server started"}
             </p>
             <div className="mt-4 flex flex-wrap gap-2">
               <button disabled={busy} onClick={() => runPolicy(true)} className="btn-secondary">
-                Preview
+                Check who is due
               </button>
               <button disabled={busy} onClick={() => runPolicy(false)} className="btn-primary">
-                Apply policy now
+                Run cleanup now
               </button>
             </div>
+            <p className="mt-2 text-xs text-zinc-500">
+              <strong>Check who is due</strong> only counts the accounts and changes nothing.{" "}
+              <strong>Run cleanup now</strong> archives and deletes them at once instead of
+              waiting for the daily run.
+            </p>
+            {policyResult && (
+              <p className="mt-3 rounded-sm border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-800">
+                {policyResult}
+              </p>
+            )}
           </Panel>
 
           <Panel>

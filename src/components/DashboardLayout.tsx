@@ -123,7 +123,7 @@ export default function DashboardLayout({
             <div className="h-px bg-zinc-400 -mx-4 my-2" />
             <button
               onClick={() => setOpenLogout(true)}
-              className="flex items-center gap-4 p-2 text-zinc-100 hover:text-zinc-900 hover:bg-zinc-100/40 justify-start w-full"
+              className="flex items-center gap-4 rounded-md bg-red-600 p-2 font-semibold text-white shadow-sm transition hover:bg-red-700 justify-start w-full"
             >
               <LogOut className="h-4 w-4" />
               Log out
@@ -159,7 +159,10 @@ export default function DashboardLayout({
                   </button>
                 );
               })}
-              <button onClick={handleLogout} className="mobile-nav-item">
+              <button
+                onClick={handleLogout}
+                className="mobile-nav-item border-red-600 bg-red-600 text-white hover:bg-red-700"
+              >
                 <LogOut className="h-4 w-4" />
                 <span>Logout</span>
               </button>

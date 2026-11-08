@@ -1,8 +1,5 @@
 import {
-  Clock3,
-  Gauge,
   Timer,
-  TrendingUp,
   Users,
   LucideIcon,
 } from "lucide-react";
@@ -10,7 +7,6 @@ import {
   QueueAnalytics as QueueAnalyticsResponse,
   QueueData,
 } from "../../types/api";
-import { numberLabel } from "../../utils/format";
 
 interface MetricsOverviewProps {
   queueData: QueueData;
@@ -51,45 +47,26 @@ function MetricCell({ icon: Icon, label, value, detail }: MetricCellProps) {
 export default function MetricsOverview({
   queueData,
   analytics,
-  utilizationPercent,
 }: MetricsOverviewProps) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 2xl:grid-cols-6 divide-x divide-zinc-200/60 rounded-sm border border-zinc-200/80 bg-white shadow-sm overflow-hidden mb-5">
+    <div className="grid grid-cols-1 sm:grid-cols-3 divide-x divide-zinc-200/60 rounded-sm border border-zinc-200/80 bg-white shadow-sm overflow-hidden mb-5">
       <MetricCell
         icon={Users}
-        label="Queue length"
+        label="In line"
         value={queueData.queue_count || queueData.queue_length || 0}
-        detail={`${queueData.pending_count || 0} pending link`}
-      />
-      <MetricCell
-        icon={Clock3}
-        label="Current wait"
-        value={`${numberLabel(queueData.estimated_wait_time || 0)} min`}
-        detail="Estimated wait"
-      />
-      <MetricCell
-        icon={TrendingUp}
-        label="Arrival rate"
-        value={numberLabel(queueData.arrival_rate || 0, 2)}
-        detail="People per minute"
-      />
-      <MetricCell
-        icon={Gauge}
-        label="Utilization"
-        value={`${numberLabel(utilizationPercent, 1)}%`}
-        detail="Service load"
+        detail={`${queueData.pending_count || 0} need a number`}
       />
       <MetricCell
         icon={Users}
-        label="People count"
+        label="In camera view"
         value={queueData.count || 0}
-        detail="Current occupants"
+        detail="People the camera can see"
       />
       <MetricCell
         icon={Timer}
-        label="New arrival"
+        label="Wait now"
         value={analytics?.new_arrival.estimated_wait_time_label || "No data"}
-        detail={`Position ${analytics?.new_arrival.position || (queueData.queue_count || queueData.queue_length || 0) + 1}`}
+        detail={`For someone joining now, at position ${analytics?.new_arrival.position || (queueData.queue_count || queueData.queue_length || 0) + 1}`}
       />
     </div>
   );

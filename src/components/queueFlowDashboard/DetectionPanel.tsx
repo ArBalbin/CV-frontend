@@ -1,8 +1,6 @@
 import { ChartData } from "chart.js";
 import { Line } from "react-chartjs-2";
 import {
-  Activity,
-  BarChart3,
   ChevronDown,
   ChevronUp,
   Eye,
@@ -11,7 +9,7 @@ import {
 } from "lucide-react";
 import { MetricCard, Panel } from "../ui";
 import { QueueData } from "../../types/api";
-import { formatAgeSeconds, numberLabel } from "../../utils/format";
+import { formatAgeSeconds } from "../../utils/format";
 import { peopleChartOptions } from "./chartConfig";
 
 interface DetectionPanelProps {
@@ -44,8 +42,8 @@ export default function DetectionPanel({
               Camera &amp; Detection
             </h2>
             <p className="text-xs text-zinc-500 mt-0.5">
-              People detection, density, and camera health — usually only needed
-              when troubleshooting.
+              How many people the camera can see. Usually only needed when
+              troubleshooting.
             </p>
           </div>
         </div>
@@ -68,20 +66,6 @@ export default function DetectionPanel({
               value={data.count}
               detail={formatAgeSeconds(data.timestamp)}
               tone="blue"
-            />
-            <MetricCard
-              icon={Activity}
-              label="Average density"
-              value={numberLabel(data.avg_density, 2)}
-              detail="People per grid cell"
-              tone="teal"
-            />
-            <MetricCard
-              icon={BarChart3}
-              label="Maximum density"
-              value={numberLabel(data.max_density, 2)}
-              detail="Busiest grid cell"
-              tone="amber"
             />
           </div>
 

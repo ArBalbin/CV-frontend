@@ -36,7 +36,7 @@ export default function ExceptionsPanel({
           {hasPending && (
             <div>
               <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-zinc-500">
-                Pending link — present in zone, not yet linked
+                Needs a number — in line but not identified
               </p>
               <div className="space-y-2.5">
                 {queueState.pending_queue!.map((person) => {
@@ -56,7 +56,7 @@ export default function ExceptionsPanel({
                               : "Waiting for face"}
                           </span>
                           <span className="font-mono text-xs text-amber-600">
-                            camera #{person.track_id}
+                            person #{person.track_id}
                           </span>
                         </span>
                         {alert && (

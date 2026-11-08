@@ -2,10 +2,8 @@ import {
   AlertTriangle,
   CheckCircle2,
   Clock3,
-  Gauge,
   Hash,
   Timer,
-  TrendingUp,
   Users,
   LucideIcon,
 } from "lucide-react";
@@ -54,34 +52,35 @@ export default function MetricsOverview({
   data,
   queueState,
   prediction,
-  utilization,
-  utilizationPercent,
 }: MetricsOverviewProps) {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 2xl:grid-cols-8 divide-x divide-zinc-200/60 rounded-sm border border-zinc-200/80 bg-white shadow-sm overflow-hidden mb-5">
+    <div className="grid grid-cols-2 sm:grid-cols-3 2xl:grid-cols-6 divide-x divide-zinc-200/60 rounded-sm border border-zinc-200/80 bg-white shadow-sm overflow-hidden mb-5">
       <MetricCell
         icon={Users}
-        label="Queue length"
+        label="In line"
         value={queueState.queue_count}
-        detail="Linked to a number"
+        detail="With a queue number"
       />
       <MetricCell
         icon={AlertTriangle}
-        label="Pending link"
+        label="Needs a number"
         value={queueState.pending_count}
-        detail="Confirmed present, unlinked"
+        detail="In line, not identified yet"
       />
       <MetricCell
         icon={Timer}
-        label="Current wait"
-        value={`${numberLabel(data.estimated_wait_time)} min`}
-        detail="Estimated wait"
+        label="Wait now"
+        value={
+          prediction?.new_arrival.estimated_wait_time_label ||
+          `${numberLabel(data.estimated_wait_time)} min`
+        }
+        detail="For someone joining now"
       />
       <MetricCell
         icon={Hash}
-        label="Counters"
+        label="Counters open"
         value={data.active_counters}
-        detail="Active service points"
+        detail="Serving the queue"
       />
       <MetricCell
         icon={Clock3}
@@ -93,21 +92,9 @@ export default function MetricsOverview({
         }
         detail={
           prediction?.service_time_source === "measured"
-            ? "Measured from DB"
-            : "Default (.env)"
+            ? "Measured from today's service"
+            : "Starting estimate"
         }
-      />
-      <MetricCell
-        icon={Gauge}
-        label="Utilization"
-        value={`${numberLabel(utilizationPercent, 1)}%`}
-        detail={utilization >= 0.9 ? "High load" : "Within range"}
-      />
-      <MetricCell
-        icon={TrendingUp}
-        label="Arrival rate"
-        value={numberLabel(data.arrival_rate, 2)}
-        detail="People per minute"
       />
       <MetricCell
         icon={CheckCircle2}

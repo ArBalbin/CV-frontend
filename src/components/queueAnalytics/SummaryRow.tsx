@@ -40,14 +40,20 @@ export default function SummaryRow({
               Forecast Summary
             </h2>
             <p className="mt-1 text-sm text-zinc-500">
-              Data age:{" "}
+              Updated:{" "}
               {analytics
                 ? `${analytics.overview.data_age_seconds}s`
                 : formatAgeSeconds(queueData.timestamp)}
             </p>
           </div>
           <StatusBadge
-            label={analytics?.overview.data_status || "loading"}
+            label={
+              !analytics
+                ? "Loading"
+                : analytics.overview.data_status === "stale"
+                  ? "Camera not updating"
+                  : "Live"
+            }
             tone={
               analytics?.overview.data_status === "stale" ? "amber" : "green"
             }
