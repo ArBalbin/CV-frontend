@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { isAxiosError } from "axios";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -82,6 +83,9 @@ export default function QueueFlowDashboard() {
   >({});
   const [manualNumber, setManualNumber] = useState("");
   const [addingManual, setAddingManual] = useState(false);
+  // Shown under the Manual Add button. The page-top error banner is off
+  // screen once the staff member scrolls down to the tracker.
+  const [manualResult, setManualResult] = useState<{ ok: boolean; text: string } | null>(null);
   const [peopleSamples, setPeopleSamples] = useState<PeopleChartSample[]>([]);
   const [showDetection, setShowDetection] = useState(false);
 
@@ -266,21 +270,36 @@ export default function QueueFlowDashboard() {
   const forceNewPerson = async () => {
     const parsed = parseInt(manualNumber, 10);
     if (!Number.isFinite(parsed) || parsed <= 0) {
-      setLastError("Enter the number printed on the kiosk ticket first.");
+      setManualResult({
+        ok: false,
+        text: "Type the number printed on the ticket first, then press Manual Add.",
+      });
       return;
     }
+    const label = `Q${String(parsed).padStart(3, "0")}`;
     setAddingManual(true);
+    setManualResult(null);
     try {
       await apiClient.post("/api/queue/force-new", {
         queue_number: parsed,
         is_walkin: true,
       });
       setManualNumber("");
+      setManualResult({ ok: true, text: `${label} added to the line.` });
       await Promise.all([fetchData(), fetchPrediction()]);
-    } catch {
-      setLastError(
-        `Could not link Q${String(parsed).padStart(3, "0")} — it may already be linked today.`,
-      );
+    } catch (error) {
+      const status = isAxiosError(error) ? error.response?.status : undefined;
+      let text: string;
+      if (status === 409) {
+        text = `${label} was already used today. Use the number on the ticket, or press Reset to start a new day.`;
+      } else if (status === 401) {
+        text = "Your login has ended. Log out, log in again, then try once more.";
+      } else if (status === undefined) {
+        text = `Could not reach the server to add ${label}. Check the internet connection and try again.`;
+      } else {
+        text = `The server could not add ${label} (error ${status}). Try again in a moment.`;
+      }
+      setManualResult({ ok: false, text });
     } finally {
       setAddingManual(false);
     }
@@ -477,6 +496,7 @@ export default function QueueFlowDashboard() {
                 manualNumber={manualNumber}
                 onManualNumberChange={setManualNumber}
                 addingManual={addingManual}
+                manualResult={manualResult}
                 onForceNewPerson={forceNewPerson}
                 onResetQueue={resetQueue}
                 markingDone={markingDone}

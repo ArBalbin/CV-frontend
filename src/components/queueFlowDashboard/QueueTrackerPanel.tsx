@@ -8,6 +8,7 @@ interface QueueTrackerPanelProps {
   manualNumber: string;
   onManualNumberChange: (value: string) => void;
   addingManual: boolean;
+  manualResult: { ok: boolean; text: string } | null;
   onForceNewPerson: () => void;
   onResetQueue: () => void;
   markingDone: number | null;
@@ -21,6 +22,7 @@ export default function QueueTrackerPanel({
   manualNumber,
   onManualNumberChange,
   addingManual,
+  manualResult,
   onForceNewPerson,
   onResetQueue,
   markingDone,
@@ -57,6 +59,11 @@ export default function QueueTrackerPanel({
             onChange={(e) =>
               onManualNumberChange(e.target.value.replace(/\D/g, ""))
             }
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !addingManual) onForceNewPerson();
+            }}
+            inputMode="numeric"
+            aria-label="Ticket number to add"
             placeholder="Ticket #"
             title="The number printed on the walk-in's kiosk ticket"
             className="w-24 rounded-md border border-zinc-200/60 bg-zinc-100 px-2.5 py-1.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none focus:ring-1 focus:ring-zinc-300 shadow-sm"
@@ -79,6 +86,18 @@ export default function QueueTrackerPanel({
           </button>
         </div>
       </div>
+      {manualResult && (
+        <p
+          role="status"
+          className={`mb-4 rounded-sm border px-3 py-2 text-sm ${
+            manualResult.ok
+              ? "border-emerald-200 bg-emerald-50 text-emerald-800"
+              : "border-red-200 bg-red-50 text-red-800"
+          }`}
+        >
+          {manualResult.text}
+        </p>
+      )}
       <div className="h-px bg-zinc-300 mb-4 -mx-5"/>
 
 
