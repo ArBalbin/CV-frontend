@@ -1,5 +1,6 @@
 import { Panel, StatusBadge } from "../ui";
 import { API_BASE_URL } from "../../config/api";
+import { getSessionToken } from "../../contexts/AuthContext";
 import { HealthStatus, QueueData } from "../../types/api";
 import { formatTimestamp } from "../../utils/format";
 import { FaVideoSlash } from "react-icons/fa";
@@ -50,7 +51,9 @@ export default function CameraPanel({
           {!streamError ? (
             <img
               key={streamKey}
-              src={`${API_BASE_URL}/api/crowd/video`}
+              // The stream needs a staff session; an <img> cannot send the
+              // session header, so the token goes in the URL.
+              src={`${API_BASE_URL}/api/crowd/video?token=${encodeURIComponent(getSessionToken() ?? "")}`}
               alt="Live annotated queue camera stream"
               className="h-full w-full object-contain"
               onError={onStreamError}

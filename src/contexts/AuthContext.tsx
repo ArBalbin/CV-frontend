@@ -29,6 +29,8 @@ interface ApiError {
 const TOKEN_KEY = 'token';
 
 const getToken = () => localStorage.getItem(TOKEN_KEY);
+// For requests that cannot carry headers, such as the camera <img> stream.
+export const getSessionToken = getToken;
 const setToken = (token: string) => localStorage.setItem(TOKEN_KEY, token);
 const removeToken = () => localStorage.removeItem(TOKEN_KEY);
 
@@ -46,7 +48,9 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
+  // Signed out until the server confirms a stored session (fetchUser) or a
+  // login succeeds. Starting at true let anyone open the dashboard by URL.
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
