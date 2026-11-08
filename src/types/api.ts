@@ -132,6 +132,28 @@ export interface ForecastItem {
   estimated_wait_time_label: string;
 }
 
+// GET /api/queue/prediction_accuracy: logged estimates scored against the
+// real waits of served tickets.
+export interface PredictionAccuracy {
+  available: boolean;
+  tickets_checked: number;
+  days_covered: number;
+  lookback_days: number;
+  close_enough_minutes: number;
+  fixed_guess_minutes: number;
+  average_miss_minutes: number | null;
+  close_enough_percent: number | null;
+  fixed_guess_average_miss_minutes: number | null;
+  typical_direction: "too_low" | "too_high" | "even" | null;
+  typical_miss_minutes: number | null;
+  recent: Array<{
+    queue_number: number;
+    service_date: string;
+    predicted_minutes: number;
+    actual_minutes: number;
+  }>;
+}
+
 export interface QueuePrediction {
   queue_length: number;
   active_counters: number;

@@ -44,6 +44,7 @@ import {
   MetricsOverview,
   OnWayNotifications,
   PeopleChartSample,
+  PredictionAccuracyPanel,
   QueueChartSample,
   QueueTrackerPanel,
   QueueTrendPanel,
@@ -526,6 +527,12 @@ export default function QueueFlowDashboard() {
               />
               <BackendStatusPanel health={health} zone={zone} />
             </div>
+          </div>
+          <div>
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+              Are the Wait Estimates Right?
+            </h2>
+            <PredictionAccuracyPanel />
           </div>
         </div>
       )}
