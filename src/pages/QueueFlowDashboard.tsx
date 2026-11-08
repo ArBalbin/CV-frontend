@@ -298,6 +298,24 @@ export default function QueueFlowDashboard() {
     }
   };
 
+  const closeCounters = async (until: string) => {
+    try {
+      await apiClient.post("/api/queue/close_counters", { until });
+      await fetchPrediction();
+    } catch {
+      setLastError(`Could not close the counters until ${until}. Pick a time later today.`);
+    }
+  };
+
+  const openCounters = async () => {
+    try {
+      await apiClient.post("/api/queue/open_counters", {});
+      await Promise.all([fetchData(), fetchPrediction()]);
+    } catch {
+      setLastError("Could not reopen the counters.");
+    }
+  };
+
 
   const chartData = useMemo(
     () => buildQueueChartData(chartSamples),
@@ -522,6 +540,9 @@ export default function QueueFlowDashboard() {
               <ServiceControlsPanel
                 activeCounters={data.active_counters}
                 onAdjustCounters={adjustCounters}
+                closedUntil={prediction?.counters_closed_until ?? null}
+                onCloseCounters={closeCounters}
+                onOpenCounters={openCounters}
               />
               <ExceptionsPanel
                 queueState={queueState}

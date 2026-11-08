@@ -141,6 +141,8 @@ export interface QueuePrediction {
   system_utilization: number;
   data_age_seconds: number;
   data_status: 'live' | 'stale' | string;
+  wait_estimator?: string;
+  counters_closed_until?: string | null;
   new_arrival: {
     position: number;
     estimated_wait_time: number;
