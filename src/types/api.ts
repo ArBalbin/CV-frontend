@@ -35,6 +35,16 @@ export interface QueuePerson {
   joined_at_iso?: string;
   bbox?: [number, number, number, number];
   counter_number?: number | null;
+  // Seconds at their window, for the Now serving cards; null while waiting.
+  seconds_at_counter?: number | null;
+}
+
+// GET /api/queue/windows: the windows and which staff account holds each.
+export interface WindowOverview {
+  call_mode: "staff" | "auto";
+  num_counters: number;
+  my_window: number | null;
+  windows: Array<{ counter_number: number; claimed_by: string | null }>;
 }
 
 export interface NewlyCalled {

@@ -9,6 +9,8 @@ export { default as QueueTrendPanel } from "./QueueTrendPanel";
 export { default as ExceptionsPanel } from "./ExceptionsPanel";
 export { default as QueueTrackerPanel } from "./QueueTrackerPanel";
 export { default as ServiceControlsPanel } from "./ServiceControlsPanel";
+export { default as NowServingPanel } from "./NowServingPanel";
+export * from "./useStaffWindow";
 export { default as PredictionAccuracyPanel } from "./PredictionAccuracyPanel";
 
 export * from "./utils";

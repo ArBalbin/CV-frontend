@@ -15,6 +15,9 @@ interface QueueTrackerPanelProps {
   onMarkDone: (queueNumber: number) => void;
   markingNoShow: number | null;
   onMarkNoShow: (queueNumber: number) => void;
+  // Done and No-show in the list: only when numbers are called automatically.
+  // When staff call numbers, each finishes their own window in Now Serving.
+  canFinish?: boolean;
 }
 
 export default function QueueTrackerPanel({
@@ -29,6 +32,7 @@ export default function QueueTrackerPanel({
   onMarkDone,
   markingNoShow,
   onMarkNoShow,
+  canFinish = false,
 }: QueueTrackerPanelProps) {
   return (
     <Panel className="p-5 border border-zinc-200/80 bg-white shadow-sm rounded-sm transition hover:border-zinc-300 text-zinc-900">
@@ -130,7 +134,7 @@ export default function QueueTrackerPanel({
                             person.status === "missing"
                               ? "Missing"
                               : person.counter_number != null
-                                ? `Serving · Counter ${person.counter_number}`
+                                ? `Serving · Window ${person.counter_number}`
                                 : "Waiting"
                           }
                           tone={positionTone(
@@ -161,6 +165,7 @@ export default function QueueTrackerPanel({
                       </div>
                     </div>
                   </div>
+                  {canFinish && person.counter_number != null && (
                   <div className="flex flex-wrap items-center gap-2">
                     <button
                       onClick={() => onMarkDone(person.queue_number)}
@@ -180,6 +185,7 @@ export default function QueueTrackerPanel({
                       {markingNoShow === person.queue_number ? "Saving" : "No-show"}
                     </button>
                   </div>
+                  )}
                 </div>
               </div>
             );

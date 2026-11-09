@@ -43,6 +43,7 @@ import {
   initialQueueData,
   initialQueueState,
   MetricsOverview,
+  NowServingPanel,
   OnWayNotifications,
   PeopleChartSample,
   PredictionAccuracyPanel,
@@ -51,6 +52,7 @@ import {
   QueueTrendPanel,
   ServiceControlsPanel,
   queueLabel,
+  useStaffWindow,
 } from "../components/queueFlowDashboard";
 
 ChartJS.register(
@@ -92,6 +94,9 @@ export default function QueueFlowDashboard() {
   const [activeTab, setActiveTab] = useState<"live" | "analytics" | "controls">(
     "live",
   );
+  // The window this staff account works; Call next sends the next number there.
+  // fetchData and fetchPrediction are declared below; they are only called later.
+  const staffWindow = useStaffWindow(() => Promise.all([fetchData(), fetchPrediction()]));
 
   useEffect(() => {
     if (!streamError) return;
@@ -465,6 +470,22 @@ export default function QueueFlowDashboard() {
         <div className="space-y-6 animate-fadeIn">
           <div>
             <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+              Now Serving
+            </h2>
+            <NowServingPanel
+              staffWindow={staffWindow}
+              line={queueState.active_queue}
+              assignments={queueState.counter_assignments}
+              activeCounters={data.active_counters}
+              closedUntil={prediction?.counters_closed_until ?? null}
+              markingDone={markingDone}
+              onMarkDone={markDone}
+              markingNoShow={markingNoShow}
+              onMarkNoShow={markNoShow}
+            />
+          </div>
+          <div>
+            <h2 className="mb-3 text-xs font-semibold uppercase tracking-wider text-zinc-500">
               System Metrics Overview
             </h2>
             <MetricsOverview
@@ -503,6 +524,7 @@ export default function QueueFlowDashboard() {
                 onMarkDone={markDone}
                 markingNoShow={markingNoShow}
                 onMarkNoShow={markNoShow}
+                canFinish={staffWindow.overview?.call_mode === "auto"}
               />
             </div>
           </div>

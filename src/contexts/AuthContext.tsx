@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { AxiosError } from 'axios';
 import { apiClient } from '../config/api';
+import { saveWindow } from '../utils/staffWindow';
 
 interface User {
   id?: string;
@@ -103,6 +104,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     try {
+      // Free this account's window for whoever works it next.
+      await apiClient.post('/api/queue/window/release', {}).catch(() => undefined);
+      saveWindow(null);
       await apiClient.post('/api/auth/logout');
     } catch {
       // Local session cleanup still needs to happen if the API is unavailable.
