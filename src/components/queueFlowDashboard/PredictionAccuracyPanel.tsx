@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Target } from "lucide-react";
+import { Download, Target } from "lucide-react";
 import { Panel, StatusBadge } from "../ui";
 import { apiClient } from "../../config/api";
 import { PredictionAccuracy } from "../../types/api";
@@ -18,6 +18,32 @@ function minutes(value: number | null | undefined) {
 export default function PredictionAccuracyPanel() {
   const [accuracy, setAccuracy] = useState<PredictionAccuracy | null>(null);
   const [failed, setFailed] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const [downloadError, setDownloadError] = useState("");
+
+  // Served tickets' real waits and service times, as a CSV for retraining the
+  // wait estimate. Times and counts only; no names or school IDs.
+  const downloadRecords = async () => {
+    setDownloading(true);
+    setDownloadError("");
+    try {
+      const response = await apiClient.get<Blob>("/api/queue/service_records.csv", {
+        responseType: "blob",
+      });
+      const url = URL.createObjectURL(response.data);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `queuex_service_records_${new Date().toISOString().slice(0, 10)}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    } catch {
+      setDownloadError("Could not download the records. Check that you are still signed in.");
+    } finally {
+      setDownloading(false);
+    }
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -144,6 +170,21 @@ export default function PredictionAccuracyPanel() {
           </div>
         </div>
       )}
+
+      <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-zinc-200 pt-4">
+        <button
+          onClick={downloadRecords}
+          disabled={downloading}
+          className="inline-flex items-center gap-1.5 rounded-md border border-zinc-200/60 bg-zinc-100 px-3.5 py-1.5 text-sm font-medium text-zinc-900 shadow-sm transition hover:bg-zinc-200 disabled:opacity-50"
+        >
+          <Download className="h-4 w-4 text-emerald-600" />
+          {downloading ? "Preparing…" : "Download service records (CSV)"}
+        </button>
+        <span className="text-xs text-zinc-500">
+          Real waits and service times of served tickets, for retraining. No names or school IDs.
+        </span>
+        {downloadError && <span className="text-sm text-red-700">{downloadError}</span>}
+      </div>
     </Panel>
   );
 }
