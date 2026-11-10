@@ -1,7 +1,7 @@
 import { CheckCircle2, Clock3, Hash, RefreshCcw, UserPlus, UserX } from "lucide-react";
 import { EmptyState, Panel, StatusBadge } from "../ui";
 import { QueueState } from "../../types/api";
-import { awayTone, formatAway, positionTone } from "./utils";
+import { awayTone, formatAway, paymentSummary, positionTone } from "./utils";
 
 interface QueueTrackerPanelProps {
   queueState: QueueState;
@@ -157,6 +157,12 @@ export default function QueueTrackerPanel({
                           {person.wait_time}
                         </span>
                         <span>Joined {person.joined_at}</span>
+                        {paymentSummary(person) && (
+                          <span className="font-sans font-medium text-zinc-700">
+                            {paymentSummary(person)}
+                            {person.payment_note ? ` (${person.payment_note})` : ""}
+                          </span>
+                        )}
                         {person.track_id !== undefined && (
                           <span className="text-zinc-400">
                             camera #{person.track_id}

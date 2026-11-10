@@ -37,6 +37,10 @@ export interface QueuePerson {
   counter_number?: number | null;
   // Seconds at their window, for the Now serving cards; null while waiting.
   seconds_at_counter?: number | null;
+  // From the student's join form in the app; null for walk-ins.
+  payment_type?: string | null;
+  payment_amount?: number | null;
+  payment_note?: string | null;
 }
 
 // GET /api/queue/windows: the windows and which staff account holds each.

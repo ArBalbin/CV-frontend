@@ -1,7 +1,7 @@
 import { CheckCircle2, Megaphone, UserX } from "lucide-react";
 import { Panel } from "../ui";
 import { QueuePerson } from "../../types/api";
-import { formatAway } from "./utils";
+import { formatAway, paymentSummary } from "./utils";
 import { StaffWindow } from "./useStaffWindow";
 
 interface NowServingPanelProps {
@@ -204,6 +204,17 @@ export default function NowServingPanel({
               <div className="font-mono text-5xl font-bold tabular-nums text-zinc-900">
                 {mine.queue_label}
               </div>
+              {/* What the student said they are paying, so the receipt can be
+                  ready before they reach the window. */}
+              <div className="rounded-sm border border-emerald-200 bg-white px-3 py-2">
+                <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Payment</div>
+                <div className="text-lg font-semibold text-zinc-900">
+                  {paymentSummary(mine) ?? "Not given (walk-in or older app)"}
+                </div>
+                {mine.payment_note && (
+                  <div className="text-sm text-zinc-700">{mine.payment_note}</div>
+                )}
+              </div>
               <FinishButtons
                 person={mine}
                 markingDone={markingDone}
@@ -292,6 +303,9 @@ export default function NowServingPanel({
                     <span className="text-xs tabular-nums text-zinc-600">
                       Serving for {formatAway(person.seconds_at_counter)}
                     </span>
+                  )}
+                  {person && paymentSummary(person) && (
+                    <span className="text-xs text-zinc-700">{paymentSummary(person)}</span>
                   )}
                   {/* In auto mode there are no per-account windows, so any staff
                       member finishes any window, as before. */}
