@@ -81,6 +81,10 @@ export function utilizationTone(
 /** "3m 35s" from a count of seconds, for the away-from-zone indicator. */
 const peso = new Intl.NumberFormat("en-PH", { style: "currency", currency: "PHP" });
 
+export function formatPeso(amount: number): string {
+  return peso.format(amount);
+}
+
 /** "Tuition fee · ₱5,000.00", or null when the student gave no details. */
 export function paymentSummary(person: {
   payment_type?: string | null;

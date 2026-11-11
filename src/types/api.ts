@@ -41,6 +41,8 @@ export interface QueuePerson {
   payment_type?: string | null;
   payment_amount?: number | null;
   payment_note?: string | null;
+  // Each line of the Payment Slip with its own amount; absent after a restart.
+  payment_items?: Array<{ type: string; amount: number; detail: string | null }> | null;
 }
 
 // GET /api/queue/windows: the windows and which staff account holds each.

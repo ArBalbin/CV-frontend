@@ -1,7 +1,7 @@
 import { CheckCircle2, Megaphone, UserX } from "lucide-react";
 import { Panel } from "../ui";
 import { QueuePerson } from "../../types/api";
-import { formatAway, paymentSummary } from "./utils";
+import { formatAway, formatPeso, paymentSummary } from "./utils";
 import { StaffWindow } from "./useStaffWindow";
 
 interface NowServingPanelProps {
@@ -207,12 +207,41 @@ export default function NowServingPanel({
               {/* What the student said they are paying, so the receipt can be
                   ready before they reach the window. */}
               <div className="rounded-sm border border-emerald-200 bg-white px-3 py-2">
-                <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Payment</div>
-                <div className="text-lg font-semibold text-zinc-900">
-                  {paymentSummary(mine) ?? "Not given (walk-in or older app)"}
+                <div className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                  Payment slip
                 </div>
-                {mine.payment_note && (
-                  <div className="text-sm text-zinc-700">{mine.payment_note}</div>
+                {mine.payment_items && mine.payment_items.length > 0 ? (
+                  // Laid out like the paper slip: each line, then the TOTAL.
+                  <table className="mt-1 w-full text-sm">
+                    <tbody>
+                      {mine.payment_items.map((item) => (
+                        <tr key={item.type} className="border-b border-zinc-100">
+                          <td className="py-1 pr-3 text-zinc-800">
+                            {item.type}
+                            {item.detail ? <span className="text-zinc-500"> · {item.detail}</span> : null}
+                          </td>
+                          <td className="py-1 text-right tabular-nums text-zinc-900">
+                            {formatPeso(item.amount)}
+                          </td>
+                        </tr>
+                      ))}
+                      <tr>
+                        <td className="pt-1.5 pr-3 font-semibold text-zinc-900">TOTAL</td>
+                        <td className="pt-1.5 text-right text-lg font-bold tabular-nums text-zinc-900">
+                          {formatPeso(mine.payment_amount ?? 0)}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                ) : (
+                  <>
+                    <div className="text-lg font-semibold text-zinc-900">
+                      {paymentSummary(mine) ?? "Not given (walk-in or older app)"}
+                    </div>
+                    {mine.payment_note && (
+                      <div className="text-sm text-zinc-700">{mine.payment_note}</div>
+                    )}
+                  </>
                 )}
               </div>
               <FinishButtons
