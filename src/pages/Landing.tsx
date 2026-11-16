@@ -21,7 +21,7 @@ export default function Landing() {
           >
             <img
               src={Logo}
-              alt="QueueFlow Logo"
+              alt="QueuEx"
               className="h-8 w-auto object-contain"
             />
           </div>
@@ -42,7 +42,7 @@ export default function Landing() {
             <p className="text-base sm:text-lg text-justify text-zinc-600 font-normal max-w-2xl mb-12 leading-relaxed">
               Built for Naga College Foundation's Registrar and Cashiering
               offices, where most students wait 20 minutes or more with no way
-              to check their status remotely. QueueFlow adds camera-based queue
+              to check their status remotely. QueuEx adds camera-based queue
               detection, wait-time estimates, and remote status checking on top
               of the display and voice announcements already in place not a
               replacement of them.
@@ -244,12 +244,11 @@ export default function Landing() {
           <div className="flex items-center gap-3">
             <img
               src={Logo}
-              alt="QueueFlow Logo"
+              alt="QueuEx"
               className="h-5 w-auto object-contain grayscale"
             />
             <span>
-              &copy; {new Date().getFullYear()} QueueEx. NCF. All rights
-              reserved.
+              &copy; {new Date().getFullYear()} QueuEx · Naga College Foundation
             </span>
           </div>
         </div>

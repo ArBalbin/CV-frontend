@@ -14,17 +14,21 @@ import { MdError } from "react-icons/md";
 
 const POLL_MS = 3000;
 
-function counterLabel(n: number) {
-  return `Counter ${n}`;
+// The office calls them windows everywhere else (the app, the staff
+// dashboard), so the board says it too, on screen and aloud.
+function windowLabel(n: number) {
+  return `Window ${n}`;
 }
 
-function CounterCard({
-  counter,
+function WindowCard({
+  windowNumber,
   person,
 }: {
-  counter: number;
+  windowNumber: number;
   person?: QueuePerson;
 }) {
+  // A window serving someone is a white card, so its text must be dark;
+  // a free window is a green card with light text.
   return (
     <div
       className={`flex flex-col items-center justify-center rounded-sm border py-6 transition-all duration-200 ${
@@ -33,16 +37,20 @@ function CounterCard({
           : "border-emerald-600 bg-emerald-700"
       }`}
     >
-      <p className="text-xs font-semibold uppercase tracking-wider text-emerald-100">
-        {counterLabel(counter)}
+      <p
+        className={`text-sm font-semibold uppercase tracking-wider ${
+          person ? "text-emerald-700" : "text-emerald-100"
+        }`}
+      >
+        {windowLabel(windowNumber)}
       </p>
-      <div className="h-px bg-zinc-400 w-full mt-4" />
+      <div className="h-px bg-zinc-300 w-full mt-4" />
       {person ? (
         <>
-          <p className="mt-3 text-6xl font-black tracking-tight text-emerald-100 font-mono">
+          <p className="mt-3 text-6xl font-black tracking-tight text-emerald-900 font-mono">
             {person.queue_label}
           </p>
-          <span className="mt-3 inline-flex items-center gap-1.5 rounded border border-emerald-300 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-100">
+          <span className="mt-3 inline-flex items-center gap-1.5 rounded border border-emerald-300 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-800">
             <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
             Now Serving
           </span>
@@ -80,7 +88,7 @@ export default function QueueDisplayBoard() {
     speakingRef.current = true;
 
     const utterance = new SpeechSynthesisUtterance(
-      `Customer number ${next.queueNumber}, please proceed to ${counterLabel(next.counterNumber)}.`,
+      `Queue number ${next.queueNumber}, please proceed to ${windowLabel(next.counterNumber)}.`,
     );
     utterance.rate = 0.85;
     utterance.pitch = 1;
@@ -187,19 +195,19 @@ export default function QueueDisplayBoard() {
               Queue Display Board
             </h1>
             <p className="text-xs text-zinc-200">
-              Live service status & active counters
+              Live service status &amp; open windows
             </p>
           </div>
         </div>
         <div className="flex items-center gap-4">
           {data && (
-            <div className="flex items-center gap-4 text-xs font-medium text-emerald-700">
+            <div className="flex items-center gap-4 text-sm font-medium text-emerald-50">
               <span className="flex items-center gap-1.5">
-                <Users className="h-4 w-4 text-emerald-600" />
+                <Users className="h-4 w-4 text-emerald-200" />
                 {data.queue_count} in queue
               </span>
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                <CheckCircle2 className="h-4 w-4 text-emerald-200" />
                 {data.total_served} served today
               </span>
             </div>
@@ -247,7 +255,7 @@ export default function QueueDisplayBoard() {
             }}
           >
             {counters.map((c) => (
-              <CounterCard key={c} counter={c} person={personAt(c)} />
+              <WindowCard key={c} windowNumber={c} person={personAt(c)} />
             ))}
           </div>
         </section>
@@ -264,7 +272,7 @@ export default function QueueDisplayBoard() {
             <div className="rounded-lg border-2 border-dashed border-emerald-600 bg-emerald-50/60 py-10 text-center  text-emerald-800">
               <span className="animate-pulse text-lg uppercase">
                 {data?.queue_count
-                  ? "All customers are currently assigned to a counter"
+                  ? "Everyone in line has been called to a window"
                   : "No customers currently waiting"}
               </span>
             </div>
@@ -310,11 +318,11 @@ export default function QueueDisplayBoard() {
           <div className="flex items-center gap-3">
             <img
               src={Logo}
-              alt="QueueFlow Logo"
+              alt="QueuEx"
               className="h-5 w-auto opacity-80 object-contain grayscale"
             />
             <span>
-              &copy; {new Date().getFullYear()} QueueEx. NCF. All rights reserved.
+              &copy; {new Date().getFullYear()} QueuEx · Naga College Foundation
             </span>
           </div>
         </div>

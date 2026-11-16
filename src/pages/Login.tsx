@@ -96,7 +96,7 @@ export default function Login() {
     <main className="min-h-screen bg-gradient-to-br from-white via-zinc-50 to-emerald-50/40 flex flex-col items-center justify-between">
       <div className="w-full max-w-md my-auto">
         <div className="mb-10 flex items-center justify-center flex-col">
-          <img src={Logo} className="w-auto h-28" alt="QueueFlow Logo" />
+          <img src={Logo} className="w-auto h-28" alt="QueuEx" />
           <p className="mt-2 text-sm text-zinc-500">
             Queue management operations
           </p>
@@ -164,7 +164,7 @@ export default function Login() {
       </div>
 
       <footer className="mt-8 text-center border-t w-full bg-emerald-700 text-xs py-4 border-zinc-400 text-zinc-100 space-y-1">
-        <p>&copy; {currentYear} QueueEx. NCF. All rights reserved.</p>
+        <p>&copy; {currentYear} QueuEx · Naga College Foundation</p>
       </footer>
     </main>
   );
