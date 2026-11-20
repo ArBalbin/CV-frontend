@@ -10,6 +10,12 @@ import {
 import { QueueData, QueuePrediction, QueueState } from "../../types/api";
 import { numberLabel } from "../../utils/format";
 
+/** Seconds as "1:57" (minutes:seconds). */
+function clockLabel(seconds: number): string {
+  const s = Math.max(0, Math.round(seconds));
+  return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+}
+
 interface MetricsOverviewProps {
   data: QueueData;
   queueState: QueueState;
@@ -87,13 +93,17 @@ export default function MetricsOverview({
         label="Avg service time"
         value={
           prediction
-            ? `${prediction.avg_service_time_min} min`
+            ? prediction.avg_service_seconds !== undefined
+              ? clockLabel(prediction.avg_service_seconds)
+              : `${prediction.avg_service_time_min} min`
             : `${numberLabel(data.estimated_wait_time || 3)} min`
         }
         detail={
-          prediction?.service_time_source === "measured"
-            ? "Measured from today's service"
-            : "Starting estimate"
+          // The same average the students' app shows: the services marked
+          // done in the past two hours, or the usual pace before any are.
+          prediction?.avg_service_basis?.startsWith("last")
+            ? `From the ${prediction.avg_service_basis}`
+            : "Usual pace (none timed yet)"
         }
       />
       <MetricCell

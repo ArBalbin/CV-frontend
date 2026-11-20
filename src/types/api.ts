@@ -174,7 +174,11 @@ export interface QueuePrediction {
   queue_length: number;
   active_counters: number;
   avg_service_time_min: number;
-  service_time_source: 'measured' | 'default' | string;
+  // The current average service time, as students see it in the app.
+  avg_service_seconds?: number;
+  avg_service_label?: string;
+  avg_service_basis?: string;
+  service_time_source: 'live' | 'usual pace' | string;
   arrival_rate_per_min: number;
   system_utilization: number;
   data_age_seconds: number;
