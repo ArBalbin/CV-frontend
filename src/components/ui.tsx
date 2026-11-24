@@ -41,7 +41,7 @@ export function MetricCard({
   tone = "blue",
 }: MetricCardProps) {
   return (
-    <div className="flex flex-col justify-between bg-white p-4 shadow-sm transition hover:bg-zinc-50">
+    <div className="flex min-w-0 flex-col justify-between bg-white p-4 shadow-sm transition hover:bg-zinc-50">
       <div className="flex items-center justify-between gap-2">
         <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">
           {label}
@@ -55,7 +55,7 @@ export function MetricCard({
       </div>
       {detail && (
         <div>
-          <span className="text-xs text-zinc-500 truncate">{detail}</span>
+          <span className="block truncate text-xs text-zinc-500" title={detail}>{detail}</span>
         </div>
       )}
     </div>

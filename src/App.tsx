@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import Landing from "./pages/Landing";
 import QueueDisplayBoard from "./pages/QueueDisplayBoard";
 import DataRetention from "./pages/DataRetention";
+import QueueRecords from "./pages/QueueRecords";
 
 function ProtectedRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated, isLoading } = useAuth();
@@ -48,6 +49,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <QueueAnalytics />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/queue-records"
+            element={
+              <ProtectedRoute>
+                <QueueRecords />
               </ProtectedRoute>
             }
           />

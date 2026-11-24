@@ -313,3 +313,51 @@ export interface RetentionOverview {
   due_for_deletion: RetentionStudent[];
   last_run: RetentionRunReport | null;
 }
+
+/** One ticket on the Queue Records page (GET /api/queue/records). Times are
+ *  already on the school's clock, e.g. "02:30:00 PM". */
+export interface QueueRecord {
+  id: number;
+  queue_number: number;
+  queue_label: string;
+  status: "waiting" | "served" | "no_show" | "expired" | string;
+  status_label: string;
+  joined_at: string | null;
+  joined_at_iso: string | null;
+  called_at: string | null;
+  finished_at: string | null;
+  wait_seconds: number | null;
+  service_seconds: number | null;
+  cashier_window: number | null;
+  payment_type: string | null;
+  payment_amount: number | null;
+  payment_note: string | null;
+  student_name: string | null;
+  student_school_id: string | null;
+  walk_in: boolean;
+  linked_via: string | null;
+  estimated_wait_seconds: number | null;
+  people_ahead_at_issue: number | null;
+  served_by: string | null;
+}
+
+export interface QueueRecordsPage {
+  date: string;
+  is_today: boolean;
+  status: string;
+  search: string;
+  page: number;
+  page_size: number;
+  total: number;
+  pages: number;
+  summary: {
+    tickets: number;
+    served: number;
+    skipped: number;
+    waiting: number;
+    avg_wait_seconds: number | null;
+    avg_service_seconds: number | null;
+    served_amount: number;
+  };
+  records: QueueRecord[];
+}

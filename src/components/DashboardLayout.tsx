@@ -5,6 +5,7 @@ import { IoPerson } from "react-icons/io5";
 import {
   Activity,
   BarChart3,
+  ClipboardList,
   ExternalLink,
   LogOut,
   MonitorPlay,
@@ -33,6 +34,11 @@ const navItems = [
     label: "Queue Analytics",
     path: "/queue-analytics",
     icon: BarChart3,
+  },
+  {
+    label: "Queue Records",
+    path: "/queue-records",
+    icon: ClipboardList,
   },
   {
     label: "Data Retention",
